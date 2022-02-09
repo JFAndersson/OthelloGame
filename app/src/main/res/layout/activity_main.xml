@@ -7,16 +7,27 @@
     tools:context=".MainActivity">
 
 
-    <androidx.cardview.widget.CardView
-        android:layout_width="300dp"
-        android:layout_height="350dp"
-        app:cardCornerRadius="15dp"
-        app:cardElevation="5dp"
-        android:layout_marginBottom="40dp"
+    <!-- Meny !-->
+
+    <FrameLayout
+        android:id="@+id/fragment_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/menuView"
+        android:layout_width="300dp"
+        android:layout_height="325dp"
+        android:layout_marginBottom="-400dp"
+        app:cardCornerRadius="15dp"
+        app:cardElevation="5dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -34,21 +45,21 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
 
-            <androidx.cardview.widget.CardView
-                android:id="@+id/onePlayers"
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/onePlayer"
                 android:layout_width="250dp"
                 android:layout_height="60dp"
-                app:cardCornerRadius="15dp"
-                app:cardElevation="5dp"
-
-
-                android:foreground="?android:attr/selectableItemBackground"
-                android:clickable="true"
-
                 android:layout_marginTop="25dp"
+
+                android:clickable="true"
+                android:foreground="?android:attr/selectableItemBackground"
+                app:cardCornerRadius="15dp"
                 app:layout_constraintEnd_toEndOf="parent"
+
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/gameHeader">
+                app:layout_constraintTop_toBottomOf="@+id/gameHeader"
+                app:strokeColor="@color/grey"
+                app:strokeWidth="1dp">
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
@@ -62,25 +73,26 @@
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"/>
+                        app:layout_constraintTop_toTopOf="parent" />
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
-            </androidx.cardview.widget.CardView>
+            </com.google.android.material.card.MaterialCardView>
 
-            <androidx.cardview.widget.CardView
-                android:id="@+id/twoPlayers"
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/twoPlayer"
                 android:layout_width="250dp"
                 android:layout_height="60dp"
-                app:cardCornerRadius="15dp"
-                app:cardElevation="5dp"
-
-                android:foreground="?android:attr/selectableItemBackground"
-                android:clickable="true"
-
                 android:layout_marginTop="10dp"
+
+                android:clickable="true"
+                android:foreground="?android:attr/selectableItemBackground"
+                app:cardCornerRadius="15dp"
                 app:layout_constraintEnd_toEndOf="parent"
+
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/onePlayers">
+                app:layout_constraintTop_toBottomOf="@+id/onePlayer"
+                app:strokeColor="@color/grey"
+                app:strokeWidth="1dp">
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
@@ -97,18 +109,23 @@
                         app:layout_constraintTop_toTopOf="parent" />
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
-            </androidx.cardview.widget.CardView>
+            </com.google.android.material.card.MaterialCardView>
 
-            <androidx.cardview.widget.CardView
+            <com.google.android.material.card.MaterialCardView
                 android:id="@+id/settings"
                 android:layout_width="250dp"
                 android:layout_height="60dp"
-                app:cardCornerRadius="15dp"
-                app:cardElevation="5dp"
                 android:layout_marginTop="10dp"
+
+                android:clickable="true"
+                android:foreground="?android:attr/selectableItemBackground"
+                app:cardCornerRadius="15dp"
                 app:layout_constraintEnd_toEndOf="parent"
+
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/twoPlayers">
+                app:layout_constraintTop_toBottomOf="@+id/twoPlayer"
+                app:strokeColor="@color/grey"
+                app:strokeWidth="1dp">
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
@@ -125,11 +142,11 @@
                         app:layout_constraintTop_toTopOf="parent" />
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
-            </androidx.cardview.widget.CardView>
+            </com.google.android.material.card.MaterialCardView>
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>
-    </androidx.cardview.widget.CardView>
+    </com.google.android.material.card.MaterialCardView>
 
 
 
