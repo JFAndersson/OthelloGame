@@ -207,10 +207,12 @@ public class BoardLayout extends Fragment implements View.OnClickListener {
                 }
             }
 
-            circleD4.setImageDrawable(AppCompatResources.getDrawable(getActivity(), R.drawable.white_circle78));
-            circleD5.setImageDrawable(AppCompatResources.getDrawable(getActivity(), R.drawable.black_circle78));
-            circleE4.setImageDrawable(AppCompatResources.getDrawable(getActivity(), R.drawable.black_circle78));
-            circleE5.setImageDrawable(AppCompatResources.getDrawable(getActivity(), R.drawable.white_circle78));
+            if (getActivity() != null){
+                circleD4.setImageDrawable(AppCompatResources.getDrawable(getActivity(), R.drawable.white_circle78));
+                circleD5.setImageDrawable(AppCompatResources.getDrawable(getActivity(), R.drawable.black_circle78));
+                circleE4.setImageDrawable(AppCompatResources.getDrawable(getActivity(), R.drawable.black_circle78));
+                circleE5.setImageDrawable(AppCompatResources.getDrawable(getActivity(), R.drawable.white_circle78));
+            }
 
             /*
             circleD4.animate().alpha(0).setDuration(0);
@@ -229,50 +231,41 @@ public class BoardLayout extends Fragment implements View.OnClickListener {
     @Override
     public void onClick(View v) {
 
-        switch (v.getId()){
-            case (R.id.circleD4):
-                if (colorWhite){
-                    circleD4.setImageDrawable(AppCompatResources.getDrawable(getActivity(), R.drawable.white_circle78));
-                }
-                else{
-                    circleD4.setImageDrawable(AppCompatResources.getDrawable(getActivity(), R.drawable.black_circle78));
-                }
-                break;
-            case (R.id.circleD5):
-                if (colorWhite){
-                    circleD5.setImageDrawable(AppCompatResources.getDrawable(getActivity(), R.drawable.white_circle78));
-                }
-                else{
-                    circleD5.setImageDrawable(AppCompatResources.getDrawable(getActivity(), R.drawable.black_circle78));
-                }
-                break;
-            case (R.id.circleE4):
-                if (colorWhite){
-                    circleE4.setImageDrawable(AppCompatResources.getDrawable(getActivity(), R.drawable.white_circle78));
-                }
-                else{
-                    circleE4.setImageDrawable(AppCompatResources.getDrawable(getActivity(), R.drawable.black_circle78));
-                }
-                break;
-            case (R.id.circleE5):
-                if (colorWhite){
-                    circleE5.setImageDrawable(AppCompatResources.getDrawable(getActivity(), R.drawable.white_circle78));
-                }
-                else{
-                    circleE5.setImageDrawable(AppCompatResources.getDrawable(getActivity(), R.drawable.black_circle78));
-                }
-                break;
+        if (getActivity() != null){
+            switch (v.getId()){
+                case (R.id.circleD4):
+                    if (colorWhite){
+                        circleD4.setImageDrawable(AppCompatResources.getDrawable(getActivity(), R.drawable.white_circle78));
+                    }
+                    else{
+                        circleD4.setImageDrawable(AppCompatResources.getDrawable(getActivity(), R.drawable.black_circle78));
+                    }
+                    break;
+                case (R.id.circleD5):
+                    if (colorWhite){
+                        circleD5.setImageDrawable(AppCompatResources.getDrawable(getActivity(), R.drawable.white_circle78));
+                    }
+                    else{
+                        circleD5.setImageDrawable(AppCompatResources.getDrawable(getActivity(), R.drawable.black_circle78));
+                    }
+                    break;
+                case (R.id.circleE4):
+                    if (colorWhite){
+                        circleE4.setImageDrawable(AppCompatResources.getDrawable(getActivity(), R.drawable.white_circle78));
+                    }
+                    else{
+                        circleE4.setImageDrawable(AppCompatResources.getDrawable(getActivity(), R.drawable.black_circle78));
+                    }
+                    break;
+                case (R.id.circleE5):
+                    if (colorWhite){
+                        circleE5.setImageDrawable(AppCompatResources.getDrawable(getActivity(), R.drawable.white_circle78));
+                    }
+                    else{
+                        circleE5.setImageDrawable(AppCompatResources.getDrawable(getActivity(), R.drawable.black_circle78));
+                    }
+                    break;
+            }
         }
-/*
-        if (!clicked){
-            gameBackground.animate().alpha(0).setDuration(0);
-            clicked = true;
-        }
-        else{
-            gameBackground.animate().alpha(1).setDuration(0);
-            clicked = false;
-        }
-
- */
     }
 }
