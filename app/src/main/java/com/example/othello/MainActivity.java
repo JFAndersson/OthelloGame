@@ -2,7 +2,11 @@ package com.example.othello;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
+import androidx.fragment.app.FragmentTransaction;
 
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
+import android.app.Activity;
 import android.os.Bundle;
 import android.text.Layout;
 import android.view.View;
@@ -10,10 +14,14 @@ import android.widget.ImageView;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
-    private float menuViewY = 0;
+    public static float menuViewY = 0;
+    private boolean firstLoad = false;
     private CardView menuView;
-    private CardView startBackground;
-    private Layout boardLayout;
+    private CardView scoreBoard;
+    private ObjectAnimator animateMenuViewDown;
+    private ObjectAnimator animateScoreBoardDown;
+    private ObjectAnimator animateMenuViewUp;
+    private ObjectAnimator animateScoreBoardUp;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -21,14 +29,25 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         setContentView(R.layout.activity_main);
 
         menuView = findViewById(R.id.menuView);
-        startBackground = findViewById(R.id.startBackground);
+        scoreBoard = findViewById(R.id.scoreBoard);
         CardView onePlayer = findViewById(R.id.onePlayer);
         CardView twoPlayer = findViewById(R.id.twoPlayer);
         CardView settings = findViewById(R.id.settings);
 
-        menuViewY = menuView.getY();
+        if (!firstLoad){
+            menuViewY = menuView.getY();
+            firstLoad = true;
+        }
 
-        menuView.animate().translationYBy(-1580).setDuration(400);
+        animateMenuViewUp = ObjectAnimator.ofFloat(menuView,"translationY",menuViewY, menuViewY - 970);
+        animateScoreBoardUp = ObjectAnimator.ofFloat(scoreBoard,"translationY",menuViewY, menuViewY - 970);
+        animateMenuViewDown = ObjectAnimator.ofFloat(menuView,"translationY",menuViewY - 970, menuViewY);
+        animateScoreBoardDown = ObjectAnimator.ofFloat(scoreBoard,"translationY",menuViewY - 970, menuViewY);
+
+        AnimatorSet animatorSet = new AnimatorSet();
+        animatorSet.playTogether(animateMenuViewUp, animateScoreBoardUp);
+        animatorSet.setDuration(300);
+        animatorSet.start();
 
         onePlayer.setOnClickListener(this);
         twoPlayer.setOnClickListener(this);
@@ -38,14 +57,38 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public void onClick(View v) {
         switch (v.getId()){
-            case R.id.onePlayer:
-            case R.id.twoPlayer:
-            case R.id.settings:
-                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new BoardLayout()).commit();
-                menuView.animate().translationY(menuViewY).setDuration(400).withStartAction(() -> {
-                    startBackground.animate().alpha(1.0f).setDuration(400);
-                });
+            case (R.id.onePlayer):
+                BoardLayout.onePlayer = true;
+                BoardLayout.colorWhite = true;
                 break;
+            case (R.id.twoPlayer):
+                BoardLayout.onePlayer = false;
+
+                //TODO: Lägg till en meny så att användaren kan bestämma vilken färg hen föredrar
+                break;
+            case (R.id.settings):
+                //något...
+                break;
+        }
+
+        getSupportFragmentManager()
+                .beginTransaction()
+                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                .replace(R.id.fragment_container, new BoardLayout())
+                .commit();
+
+        AnimatorSet animatorSet = new AnimatorSet();
+        animatorSet.playTogether(animateMenuViewDown, animateScoreBoardDown);
+        animatorSet.setDuration(300);
+        animatorSet.start();
+    }
+
+    public static float convertDpToPx(float dp, Activity activity) {
+        if (activity != null){
+            return dp * activity.getResources().getDisplayMetrics().density;
+        }
+        else{
+            return 0;
         }
     }
 }
