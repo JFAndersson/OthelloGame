@@ -17,11 +17,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public static float menuViewY = 0;
     private boolean firstLoad = false;
     private CardView menuView;
+    private CardView pickColor;
     private CardView scoreBoard;
     private ObjectAnimator animateMenuViewDown;
     private ObjectAnimator animateScoreBoardDown;
+    private ObjectAnimator animatePickMenuDown;
     private ObjectAnimator animateMenuViewUp;
     private ObjectAnimator animateScoreBoardUp;
+    private ObjectAnimator animatePickMenuUp;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,10 +32,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         setContentView(R.layout.activity_main);
 
         menuView = findViewById(R.id.menuView);
+        pickColor = findViewById(R.id.pickColor);
         scoreBoard = findViewById(R.id.scoreBoard);
         CardView onePlayer = findViewById(R.id.onePlayer);
         CardView twoPlayer = findViewById(R.id.twoPlayer);
         CardView settings = findViewById(R.id.settings);
+        CardView pickWhite = findViewById(R.id.pickWhite);
+        CardView pickBlack = findViewById(R.id.pickBlack);
 
         if (!firstLoad){
             menuViewY = menuView.getY();
@@ -41,8 +47,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         animateMenuViewUp = ObjectAnimator.ofFloat(menuView,"translationY",menuViewY, menuViewY - 970);
         animateScoreBoardUp = ObjectAnimator.ofFloat(scoreBoard,"translationY",menuViewY, menuViewY - 970);
+        animatePickMenuUp = ObjectAnimator.ofFloat(pickColor, "translationY", menuViewY, menuViewY - 970);
         animateMenuViewDown = ObjectAnimator.ofFloat(menuView,"translationY",menuViewY - 970, menuViewY);
         animateScoreBoardDown = ObjectAnimator.ofFloat(scoreBoard,"translationY",menuViewY - 970, menuViewY);
+        animatePickMenuDown = ObjectAnimator.ofFloat(pickColor, "translationY", menuViewY - 970, menuViewY);
 
         AnimatorSet animatorSet = new AnimatorSet();
         animatorSet.playTogether(animateMenuViewUp, animateScoreBoardUp);
@@ -52,6 +60,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         onePlayer.setOnClickListener(this);
         twoPlayer.setOnClickListener(this);
         settings.setOnClickListener(this);
+        pickWhite.setOnClickListener(this);
+        pickBlack.setOnClickListener(this);
     }
 
     @Override
@@ -59,28 +69,36 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         switch (v.getId()){
             case (R.id.onePlayer):
                 BoardLayout.onePlayer = true;
-                BoardLayout.colorWhite = true;
-                break;
             case (R.id.twoPlayer):
-                BoardLayout.onePlayer = false;
+                AnimatorSet animatorSet = new AnimatorSet();
+                animatorSet.playTogether(animateMenuViewDown, animateScoreBoardDown);
+                animatorSet.setDuration(300);
+                animatorSet.start();
 
-                //TODO: Lägg till en meny så att användaren kan bestämma vilken färg hen föredrar
+                AnimatorSet animatorSet2 = new AnimatorSet();
+                animatorSet2.play(animatePickMenuUp);
+                animatorSet2.setDuration(300).setStartDelay(300);
+                animatorSet2.start();
                 break;
             case (R.id.settings):
-                //något...
+                //TODO: Skapa inställningsmeny
                 break;
+            case (R.id.pickWhite):
+                BoardLayout.colorWhite = true;
+            case (R.id.pickBlack):
+                AnimatorSet animatorSet3 = new AnimatorSet();
+                animatorSet3.play(animatePickMenuDown);
+                animatorSet3.setDuration(300).setStartDelay(300);
+                animatorSet3.start();
+
+                getSupportFragmentManager()
+                        .beginTransaction()
+                        .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                        .replace(R.id.fragment_container, new BoardLayout())
+                        .commit();
+                break;
+            default:
         }
-
-        getSupportFragmentManager()
-                .beginTransaction()
-                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-                .replace(R.id.fragment_container, new BoardLayout())
-                .commit();
-
-        AnimatorSet animatorSet = new AnimatorSet();
-        animatorSet.playTogether(animateMenuViewDown, animateScoreBoardDown);
-        animatorSet.setDuration(300);
-        animatorSet.start();
     }
 
     public static float convertDpToPx(float dp, Activity activity) {
