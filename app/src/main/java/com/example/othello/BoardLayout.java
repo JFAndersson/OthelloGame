@@ -24,14 +24,14 @@ public class BoardLayout extends Fragment implements View.OnClickListener {
 
     //region declarations
 
-    private ArrayList<ArrayList<ImageView>> store_circles = new ArrayList<>();
+    public static ArrayList<ArrayList<ImageView>> store_circles = new ArrayList<>();
+    public static int rowIndexClicked = 0;
 
     private View view;
     private ImageView gameBackground;
-    public static boolean onePlayer = false;
-    public static boolean colorWhite = false;
+    private ImageView clickedVariable;
 
-    private boolean clicked = false;
+    public static boolean clicked = false;
     boolean firstLoad = false;
 
     private ImageView circleA1; private ImageView circleB1;
@@ -159,50 +159,19 @@ public class BoardLayout extends Fragment implements View.OnClickListener {
 
         //region setListeners
 
-        circleA1.setOnClickListener(this); circleB1.setOnClickListener(this);
-        circleA2.setOnClickListener(this); circleB2.setOnClickListener(this);
-        circleA3.setOnClickListener(this); circleB3.setOnClickListener(this);
-        circleA4.setOnClickListener(this); circleB4.setOnClickListener(this);
-        circleA5.setOnClickListener(this); circleB5.setOnClickListener(this);
-        circleA6.setOnClickListener(this); circleB6.setOnClickListener(this);
-        circleA7.setOnClickListener(this); circleB7.setOnClickListener(this);
-        circleA8.setOnClickListener(this); circleB8.setOnClickListener(this);
-
-        circleC1.setOnClickListener(this); circleD1.setOnClickListener(this);
-        circleC2.setOnClickListener(this); circleD2.setOnClickListener(this);
-        circleC3.setOnClickListener(this); circleD3.setOnClickListener(this);
-        circleC4.setOnClickListener(this); circleD4.setOnClickListener(this);
-        circleC5.setOnClickListener(this); circleD5.setOnClickListener(this);
-        circleC6.setOnClickListener(this); circleD6.setOnClickListener(this);
-        circleC7.setOnClickListener(this); circleD7.setOnClickListener(this);
-        circleC8.setOnClickListener(this); circleD8.setOnClickListener(this);
-
-        circleE1.setOnClickListener(this); circleF1.setOnClickListener(this);
-        circleE2.setOnClickListener(this); circleF2.setOnClickListener(this);
-        circleE3.setOnClickListener(this); circleF3.setOnClickListener(this);
-        circleE4.setOnClickListener(this); circleF4.setOnClickListener(this);
-        circleE5.setOnClickListener(this); circleF5.setOnClickListener(this);
-        circleE6.setOnClickListener(this); circleF6.setOnClickListener(this);
-        circleE7.setOnClickListener(this); circleF7.setOnClickListener(this);
-        circleE8.setOnClickListener(this); circleF8.setOnClickListener(this);
-
-        circleG1.setOnClickListener(this); circleH1.setOnClickListener(this);
-        circleG2.setOnClickListener(this); circleH2.setOnClickListener(this);
-        circleG3.setOnClickListener(this); circleH3.setOnClickListener(this);
-        circleG4.setOnClickListener(this); circleH4.setOnClickListener(this);
-        circleG5.setOnClickListener(this); circleH5.setOnClickListener(this);
-        circleG6.setOnClickListener(this); circleH6.setOnClickListener(this);
-        circleG7.setOnClickListener(this); circleH7.setOnClickListener(this);
-        circleG8.setOnClickListener(this); circleH8.setOnClickListener(this);
+        for (ArrayList<ImageView> row : store_circles){
+            for (ImageView image : row){
+                image.setOnClickListener(this);
+            }
+        }
 
         //endregion
 
         if (!firstLoad){
-
             for (ArrayList<ImageView> row : store_circles){
                 for (ImageView image : row){
                     if (image != circleD4 && image != circleD5 && image != circleE4 && image != circleE5){
-                        image.setVisibility(View.GONE);
+                        image.setImageAlpha(0);
                     }
                 }
             }
@@ -212,15 +181,12 @@ public class BoardLayout extends Fragment implements View.OnClickListener {
                 circleD5.setImageDrawable(AppCompatResources.getDrawable(getActivity(), R.drawable.black_circle78));
                 circleE4.setImageDrawable(AppCompatResources.getDrawable(getActivity(), R.drawable.black_circle78));
                 circleE5.setImageDrawable(AppCompatResources.getDrawable(getActivity(), R.drawable.white_circle78));
+
+                circleD4.setClickable(false);
+                circleD5.setClickable(false);
+                circleE4.setClickable(false);
+                circleE5.setClickable(false);
             }
-
-            /*
-            circleD4.animate().alpha(0).setDuration(0);
-            circleD5.animate().alpha(0).setDuration(0);
-            circleE4.animate().alpha(0).setDuration(0);
-            circleE5.animate().alpha(0).setDuration(0);
-
-             */
 
             firstLoad = true;
         }
@@ -228,43 +194,283 @@ public class BoardLayout extends Fragment implements View.OnClickListener {
         return view;
     }
 
+    private void variableClicked(ImageView clickedVariable){
+        this.clickedVariable = clickedVariable;
+    }
+
     @Override
     public void onClick(View v) {
 
+        //1. Identifiera vilken variabel som tryckts
+        //2. Gör denna variabel "unclickable"
+
         if (getActivity() != null){
             switch (v.getId()){
+                case (R.id.circleA1):
+                    clickedVariable = view.findViewById(R.id.circleA1);
+                    rowIndexClicked = 0;
+                    break;
+                case (R.id.circleA2):
+                    clickedVariable = view.findViewById(R.id.circleA2);
+                    rowIndexClicked = 0;
+                    break;
+                case (R.id.circleA3):
+                    clickedVariable = view.findViewById(R.id.circleA3);
+                    rowIndexClicked = 0;
+                    break;
+                case (R.id.circleA4):
+                    clickedVariable = view.findViewById(R.id.circleA4);
+                    rowIndexClicked = 0;
+                    break;
+                case (R.id.circleA5):
+                    clickedVariable = view.findViewById(R.id.circleA5);
+                    rowIndexClicked = 0;
+                    break;
+                case (R.id.circleA6):
+                    clickedVariable = view.findViewById(R.id.circleA6);
+                    rowIndexClicked = 0;
+                    break;
+                case (R.id.circleA7):
+                    clickedVariable = view.findViewById(R.id.circleA7);
+                    rowIndexClicked = 0;
+                    break;
+                case (R.id.circleA8):
+                    clickedVariable = view.findViewById(R.id.circleA8);
+                    rowIndexClicked = 0;
+                    break;
+                case (R.id.circleB1):
+                    clickedVariable = view.findViewById(R.id.circleB1);
+                    rowIndexClicked = 1;
+                    break;
+                case (R.id.circleB2):
+                    clickedVariable = view.findViewById(R.id.circleB2);
+                    rowIndexClicked = 1;
+                    break;
+                case (R.id.circleB3):
+                    clickedVariable = view.findViewById(R.id.circleB3);
+                    rowIndexClicked = 1;
+                    break;
+                case (R.id.circleB4):
+                    clickedVariable = view.findViewById(R.id.circleB4);
+                    rowIndexClicked = 1;
+                    break;
+                case (R.id.circleB5):
+                    clickedVariable = view.findViewById(R.id.circleB5);
+                    rowIndexClicked = 1;
+                    break;
+                case (R.id.circleB6):
+                    clickedVariable = view.findViewById(R.id.circleB6);
+                    rowIndexClicked = 1;
+                    break;
+                case (R.id.circleB7):
+                    clickedVariable = view.findViewById(R.id.circleB7);
+                    rowIndexClicked = 1;
+                    break;
+                case (R.id.circleB8):
+                    clickedVariable = view.findViewById(R.id.circleB8);
+                    rowIndexClicked = 1;
+                    break;
+                case (R.id.circleC1):
+                    clickedVariable = view.findViewById(R.id.circleC1);
+                    rowIndexClicked = 2;
+                    break;
+                case (R.id.circleC2):
+                    clickedVariable = view.findViewById(R.id.circleC2);
+                    rowIndexClicked = 2;
+                    break;
+                case (R.id.circleC3):
+                    clickedVariable = view.findViewById(R.id.circleC3);
+                    rowIndexClicked = 2;
+                    break;
+                case (R.id.circleC4):
+                    clickedVariable = view.findViewById(R.id.circleC4);
+                    rowIndexClicked = 2;
+                    break;
+                case (R.id.circleC5):
+                    clickedVariable = view.findViewById(R.id.circleC5);
+                    rowIndexClicked = 2;
+                    break;
+                case (R.id.circleC6):
+                    clickedVariable = view.findViewById(R.id.circleC6);
+                    rowIndexClicked = 2;
+                    break;
+                case (R.id.circleC7):
+                    clickedVariable = view.findViewById(R.id.circleC7);
+                    rowIndexClicked = 2;
+                    break;
+                case (R.id.circleC8):
+                    clickedVariable = view.findViewById(R.id.circleC8);
+                    rowIndexClicked = 2;
+                    break;
+                case (R.id.circleD1):
+                    clickedVariable = view.findViewById(R.id.circleD1);
+                    rowIndexClicked = 3;
+                    break;
+                case (R.id.circleD2):
+                    clickedVariable = view.findViewById(R.id.circleD2);
+                    rowIndexClicked = 3;
+                    break;
+                case (R.id.circleD3):
+                    clickedVariable = view.findViewById(R.id.circleD3);
+                    rowIndexClicked = 3;
+                    break;
                 case (R.id.circleD4):
-                    if (colorWhite){
-                        circleD4.setImageDrawable(AppCompatResources.getDrawable(getActivity(), R.drawable.white_circle78));
-                    }
-                    else{
-                        circleD4.setImageDrawable(AppCompatResources.getDrawable(getActivity(), R.drawable.black_circle78));
-                    }
+                    clickedVariable = view.findViewById(R.id.circleD4);
+                    rowIndexClicked = 3;
                     break;
                 case (R.id.circleD5):
-                    if (colorWhite){
-                        circleD5.setImageDrawable(AppCompatResources.getDrawable(getActivity(), R.drawable.white_circle78));
-                    }
-                    else{
-                        circleD5.setImageDrawable(AppCompatResources.getDrawable(getActivity(), R.drawable.black_circle78));
-                    }
+                    clickedVariable = view.findViewById(R.id.circleD5);
+                    rowIndexClicked = 3;
+                    break;
+                case (R.id.circleD6):
+                    clickedVariable = view.findViewById(R.id.circleD6);
+                    rowIndexClicked = 3;
+                    break;
+                case (R.id.circleD7):
+                    clickedVariable = view.findViewById(R.id.circleD7);
+                    rowIndexClicked = 3;
+                    break;
+                case (R.id.circleD8):
+                    clickedVariable = view.findViewById(R.id.circleD8);
+                    rowIndexClicked = 3;
+                    break;
+                case (R.id.circleE1):
+                    clickedVariable = view.findViewById(R.id.circleE1);
+                    rowIndexClicked = 4;
+                    break;
+                case (R.id.circleE2):
+                    clickedVariable = view.findViewById(R.id.circleE2);
+                    rowIndexClicked = 4;
+                    break;
+                case (R.id.circleE3):
+                    clickedVariable = view.findViewById(R.id.circleE3);
+                    rowIndexClicked = 4;
                     break;
                 case (R.id.circleE4):
-                    if (colorWhite){
-                        circleE4.setImageDrawable(AppCompatResources.getDrawable(getActivity(), R.drawable.white_circle78));
-                    }
-                    else{
-                        circleE4.setImageDrawable(AppCompatResources.getDrawable(getActivity(), R.drawable.black_circle78));
-                    }
+                    clickedVariable = view.findViewById(R.id.circleE4);
+                    rowIndexClicked = 4;
                     break;
                 case (R.id.circleE5):
-                    if (colorWhite){
-                        circleE5.setImageDrawable(AppCompatResources.getDrawable(getActivity(), R.drawable.white_circle78));
-                    }
-                    else{
-                        circleE5.setImageDrawable(AppCompatResources.getDrawable(getActivity(), R.drawable.black_circle78));
-                    }
+                    clickedVariable = view.findViewById(R.id.circleE5);
+                    rowIndexClicked = 4;
                     break;
+                case (R.id.circleE6):
+                    clickedVariable = view.findViewById(R.id.circleE6);
+                    rowIndexClicked = 4;
+                    break;
+                case (R.id.circleE7):
+                    clickedVariable = view.findViewById(R.id.circleE7);
+                    rowIndexClicked = 4;
+                    break;
+                case (R.id.circleE8):
+                    clickedVariable = view.findViewById(R.id.circleE8);
+                    rowIndexClicked = 4;
+                    break;
+                case (R.id.circleF1):
+                    clickedVariable = view.findViewById(R.id.circleF1);
+                    rowIndexClicked = 5;
+                    break;
+                case (R.id.circleF2):
+                    clickedVariable = view.findViewById(R.id.circleF2);
+                    rowIndexClicked = 5;
+                    break;
+                case (R.id.circleF3):
+                    clickedVariable = view.findViewById(R.id.circleF3);
+                    rowIndexClicked = 5;
+                    break;
+                case (R.id.circleF4):
+                    clickedVariable = view.findViewById(R.id.circleF4);
+                    rowIndexClicked = 5;
+                    break;
+                case (R.id.circleF5):
+                    clickedVariable = view.findViewById(R.id.circleF5);
+                    rowIndexClicked = 5;
+                    break;
+                case (R.id.circleF6):
+                    clickedVariable = view.findViewById(R.id.circleF6);
+                    rowIndexClicked = 5;
+                    break;
+                case (R.id.circleF7):
+                    clickedVariable = view.findViewById(R.id.circleF7);
+                    rowIndexClicked = 5;
+                    break;
+                case (R.id.circleF8):
+                    clickedVariable = view.findViewById(R.id.circleF8);
+                    rowIndexClicked = 5;
+                    break;
+                case (R.id.circleG1):
+                    clickedVariable = view.findViewById(R.id.circleG1);
+                    rowIndexClicked = 6;
+                    break;
+                case (R.id.circleG2):
+                    clickedVariable = view.findViewById(R.id.circleG2);
+                    rowIndexClicked = 6;
+                    break;
+                case (R.id.circleG3):
+                    clickedVariable = view.findViewById(R.id.circleG3);
+                    rowIndexClicked = 6;
+                    break;
+                case (R.id.circleG4):
+                    clickedVariable = view.findViewById(R.id.circleG4);
+                    rowIndexClicked = 6;
+                    break;
+                case (R.id.circleG5):
+                    clickedVariable = view.findViewById(R.id.circleG5);
+                    rowIndexClicked = 6;
+                    break;
+                case (R.id.circleG6):
+                    clickedVariable = view.findViewById(R.id.circleG6);
+                    rowIndexClicked = 6;
+                    break;
+                case (R.id.circleG7):
+                    clickedVariable = view.findViewById(R.id.circleG7);
+                    rowIndexClicked = 6;
+                    break;
+                case (R.id.circleG8):
+                    clickedVariable = view.findViewById(R.id.circleG8);
+                    rowIndexClicked = 6;
+                    break;
+                case (R.id.circleH1):
+                    clickedVariable = view.findViewById(R.id.circleH1);
+                    rowIndexClicked = 7;
+                    break;
+                case (R.id.circleH2):
+                    clickedVariable = view.findViewById(R.id.circleH2);
+                    rowIndexClicked = 7;
+                    break;
+                case (R.id.circleH3):
+                    clickedVariable = view.findViewById(R.id.circleH3);
+                    rowIndexClicked = 7;
+                    break;
+                case (R.id.circleH4):
+                    clickedVariable = view.findViewById(R.id.circleH4);
+                    rowIndexClicked = 7;
+                    break;
+                case (R.id.circleH5):
+                    clickedVariable = view.findViewById(R.id.circleH5);
+                    rowIndexClicked = 7;
+                    break;
+                case (R.id.circleH6):
+                    clickedVariable = view.findViewById(R.id.circleH6);
+                    rowIndexClicked = 7;
+                    break;
+                case (R.id.circleH7):
+                    clickedVariable = view.findViewById(R.id.circleH7);
+                    rowIndexClicked = 7;
+                    break;
+                case (R.id.circleH8):
+                    clickedVariable = view.findViewById(R.id.circleH8);
+                    rowIndexClicked = 7;
+                    break;
+            }
+
+            if (GameFramework.runFramework(clickedVariable)){
+                if (MainActivity.colorWhite){
+                    clickedVariable.setImageDrawable(AppCompatResources.getDrawable(getActivity(), R.drawable.white_circle78));
+                }
+                else{
+                    clickedVariable.setImageDrawable(AppCompatResources.getDrawable(getActivity(), R.drawable.black_circle78));
+                }
             }
         }
     }

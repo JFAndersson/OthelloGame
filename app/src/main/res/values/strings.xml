@@ -5,4 +5,6 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="circle">circle</string>
     <string name="playarea">play area</string>
+    <string name="settingsHeader">Inställningar</string>
+    <string name="returnHeader">Tillbaka</string>
 </resources>
