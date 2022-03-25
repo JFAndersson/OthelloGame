@@ -1,18 +1,15 @@
 package com.example.othello;
 
-import android.animation.AnimatorSet;
-import android.annotation.SuppressLint;
-import android.app.ActionBar;
 import android.os.Bundle;
 
 import androidx.appcompat.content.res.AppCompatResources;
-import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
 
-import android.provider.ContactsContract;
+import android.transition.ChangeBounds;
+import android.transition.TransitionManager;
+import android.transition.TransitionSet;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -28,10 +25,10 @@ public class BoardLayout extends Fragment implements View.OnClickListener {
     public static int rowIndexClicked = 0;
 
     private View view;
+    private CardView shadowColor;
     private ImageView gameBackground;
     private ImageView clickedVariable;
 
-    public static boolean clicked = false;
     boolean firstLoad = false;
 
     private ImageView circleA1; private ImageView circleB1;
@@ -81,6 +78,7 @@ public class BoardLayout extends Fragment implements View.OnClickListener {
         //region instantiations
 
         gameBackground = view.findViewById(R.id.gameBackground);
+        shadowColor = view.findViewById(R.id.shadowColor);
 
         circleA1 = view.findViewById(R.id.circleA1); circleB1 = view.findViewById(R.id.circleB1);
         circleA2 = view.findViewById(R.id.circleA2); circleB2 = view.findViewById(R.id.circleB2);
@@ -123,37 +121,37 @@ public class BoardLayout extends Fragment implements View.OnClickListener {
         rowA.add(circleA5); rowA.add(circleA6); rowA.add(circleA7); rowA.add(circleA8);
 
         ArrayList<ImageView> rowB = new ArrayList<>();
-        rowA.add(circleB1); rowA.add(circleB2); rowA.add(circleB3); rowA.add(circleB4);
-        rowA.add(circleB5); rowA.add(circleB6); rowA.add(circleB7); rowA.add(circleB8);
+        rowB.add(circleB1); rowB.add(circleB2); rowB.add(circleB3); rowB.add(circleB4);
+        rowB.add(circleB5); rowB.add(circleB6); rowB.add(circleB7); rowB.add(circleB8);
 
         ArrayList<ImageView> rowC = new ArrayList<>();
-        rowA.add(circleC1); rowA.add(circleC2); rowA.add(circleC3); rowA.add(circleC4);
-        rowA.add(circleC5); rowA.add(circleC6); rowA.add(circleC7); rowA.add(circleC8);
+        rowC.add(circleC1); rowC.add(circleC2); rowC.add(circleC3); rowC.add(circleC4);
+        rowC.add(circleC5); rowC.add(circleC6); rowC.add(circleC7); rowC.add(circleC8);
 
         ArrayList<ImageView> rowD = new ArrayList<>();
-        rowA.add(circleD1); rowA.add(circleD2); rowA.add(circleD3); rowA.add(circleD4);
-        rowA.add(circleD5); rowA.add(circleD6); rowA.add(circleD7); rowA.add(circleD8);
+        rowD.add(circleD1); rowD.add(circleD2); rowD.add(circleD3); rowD.add(circleD4);
+        rowD.add(circleD5); rowD.add(circleD6); rowD.add(circleD7); rowD.add(circleD8);
 
         ArrayList<ImageView> rowE = new ArrayList<>();
-        rowA.add(circleE1); rowA.add(circleE2); rowA.add(circleE3); rowA.add(circleE4);
-        rowA.add(circleE5); rowA.add(circleE6); rowA.add(circleE7); rowA.add(circleE8);
+        rowE.add(circleE1); rowE.add(circleE2); rowE.add(circleE3); rowE.add(circleE4);
+        rowE.add(circleE5); rowE.add(circleE6); rowE.add(circleE7); rowE.add(circleE8);
 
         ArrayList<ImageView> rowF = new ArrayList<>();
-        rowA.add(circleF1); rowA.add(circleF2); rowA.add(circleF3); rowA.add(circleF4);
-        rowA.add(circleF5); rowA.add(circleF6); rowA.add(circleF7); rowA.add(circleF8);
+        rowF.add(circleF1); rowF.add(circleF2); rowF.add(circleF3); rowF.add(circleF4);
+        rowF.add(circleF5); rowF.add(circleF6); rowF.add(circleF7); rowF.add(circleF8);
 
         ArrayList<ImageView> rowG = new ArrayList<>();
-        rowA.add(circleG1); rowA.add(circleG2); rowA.add(circleG3); rowA.add(circleG4);
-        rowA.add(circleG5); rowA.add(circleG6); rowA.add(circleG7); rowA.add(circleG8);
+        rowG.add(circleG1); rowG.add(circleG2); rowG.add(circleG3); rowG.add(circleG4);
+        rowG.add(circleG5); rowG.add(circleG6); rowG.add(circleG7); rowG.add(circleG8);
 
         ArrayList<ImageView> rowH = new ArrayList<>();
-        rowA.add(circleH1); rowA.add(circleH2); rowA.add(circleH3); rowA.add(circleH4);
-        rowA.add(circleH5); rowA.add(circleH6); rowA.add(circleH7); rowA.add(circleH8);
+        rowH.add(circleH1); rowH.add(circleH2); rowH.add(circleH3); rowH.add(circleH4);
+        rowH.add(circleH5); rowH.add(circleH6); rowH.add(circleH7); rowH.add(circleH8);
 
-        store_circles.add(rowA); store_circles.add(rowE);
-        store_circles.add(rowB); store_circles.add(rowF);
-        store_circles.add(rowC); store_circles.add(rowG);
-        store_circles.add(rowD); store_circles.add(rowH);
+        store_circles.add(rowA); store_circles.add(rowB);
+        store_circles.add(rowC); store_circles.add(rowD);
+        store_circles.add(rowE); store_circles.add(rowF);
+        store_circles.add(rowG); store_circles.add(rowH);
 
         //endregion
 
@@ -164,6 +162,13 @@ public class BoardLayout extends Fragment implements View.OnClickListener {
                 image.setOnClickListener(this);
             }
         }
+
+        gameBackground.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(clickedVariable.getContext(), "Bakgrund", Toast.LENGTH_SHORT).show();
+            }
+        });
 
         //endregion
 
@@ -188,21 +193,26 @@ public class BoardLayout extends Fragment implements View.OnClickListener {
                 circleE5.setClickable(false);
             }
 
+            //TODO: Help indicators
+            if (MainActivity.placementHelp){
+                HelpIndicators.activateIndicators(circleA1);
+            }
+
+            if (MainActivity.colorWhite){
+                shadowColor.setOutlineSpotShadowColor(getResources().getColor(R.color.white, null));
+            }
+            else{
+                shadowColor.setOutlineSpotShadowColor(getResources().getColor(R.color.black, null));
+            }
+
             firstLoad = true;
         }
 
         return view;
     }
 
-    private void variableClicked(ImageView clickedVariable){
-        this.clickedVariable = clickedVariable;
-    }
-
     @Override
     public void onClick(View v) {
-
-        //1. Identifiera vilken variabel som tryckts
-        //2. Gör denna variabel "unclickable"
 
         if (getActivity() != null){
             switch (v.getId()){
@@ -464,12 +474,19 @@ public class BoardLayout extends Fragment implements View.OnClickListener {
                     break;
             }
 
-            if (GameFramework.runFramework(clickedVariable)){
+            if (GameFramework.checkProximity(clickedVariable)){
+
+                MainActivity.colorWhite = !MainActivity.colorWhite;
+
                 if (MainActivity.colorWhite){
-                    clickedVariable.setImageDrawable(AppCompatResources.getDrawable(getActivity(), R.drawable.white_circle78));
+                    shadowColor.setOutlineSpotShadowColor(getResources().getColor(R.color.white, null));
                 }
                 else{
-                    clickedVariable.setImageDrawable(AppCompatResources.getDrawable(getActivity(), R.drawable.black_circle78));
+                    shadowColor.setOutlineSpotShadowColor(getResources().getColor(R.color.black, null));
+                }
+
+                if (MainActivity.placementHelp){
+                    HelpIndicators.activateIndicators(clickedVariable);
                 }
             }
         }

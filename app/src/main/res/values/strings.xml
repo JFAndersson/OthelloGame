@@ -7,4 +7,5 @@
     <string name="playarea">play area</string>
     <string name="settingsHeader">Inställningar</string>
     <string name="returnHeader">Tillbaka</string>
+    <string name="pick_color">Välj din färg</string>
 </resources>

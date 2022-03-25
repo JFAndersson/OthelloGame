@@ -17,6 +17,7 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <androidx.cardview.widget.CardView
+            android:id="@+id/shadowColor"
             android:layout_width="700dp"
             android:layout_height="700dp"
             app:cardElevation="15dp"
@@ -840,6 +841,36 @@
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
         </androidx.cardview.widget.CardView>
+
+        <!-- ... -->
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/whiteVisualizer"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:backgroundTint="@color/white"
+
+            app:cardCornerRadius="100dp"
+
+            android:elevation="2dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/shadowColor"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/blackVisualizer"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:backgroundTint="@color/black"
+
+            app:cardCornerRadius="100dp"
+
+            android:elevation="2dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@+id/cardView"
+            app:layout_constraintStart_toEndOf="@+id/shadowColor"
+            app:layout_constraintTop_toTopOf="parent" />
 
 
 

@@ -7,6 +7,10 @@ import androidx.fragment.app.FragmentTransaction;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.app.Activity;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.transition.ChangeBounds;
 import android.transition.TransitionManager;
@@ -44,6 +48,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private CardView settingsBtn;
 
     private TextView gameHeader;
+    private TextView pickHeader;
     private TextView settingsBtnHeader;
     private TextView scoreBoardHeader;
 
@@ -71,6 +76,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         menuView = findViewById(R.id.menuView);
         gameHeader = findViewById(R.id.gameHeader);
+        pickHeader = findViewById(R.id.pickHeader);
         settingsBtnHeader = findViewById(R.id.settingsBtnHeader);
         scoreBoardHeader = findViewById(R.id.scoreBoardHeader);
         toggleHelpSwitch = findViewById(R.id.toggleHelpBtn);
@@ -98,12 +104,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         animateMenuViewUp = ObjectAnimator.ofFloat(menuView,"translationY",menuViewY, menuViewY - 970);
         animateScoreBoardUp = ObjectAnimator.ofFloat(scoreBoard,"translationY",menuViewY, menuViewY - 970);
         animatePickMenuUp = ObjectAnimator.ofFloat(pickColor, "translationY", menuViewY, menuViewY - 970);
-        animateSettingBtnUp = ObjectAnimator.ofFloat(settingsBtn, "translationY", settingsBtnY + 42, settingsBtnY);
+        animateSettingBtnUp = ObjectAnimator.ofFloat(settingsBtn, "translationY", settingsBtnY + 27, settingsBtnY);
 
         animateMenuViewDown = ObjectAnimator.ofFloat(menuView,"translationY",menuViewY - 970, menuViewY);
         animateScoreBoardDown = ObjectAnimator.ofFloat(scoreBoard,"translationY",menuViewY - 970, menuViewY);
         animatePickMenuDown = ObjectAnimator.ofFloat(pickColor, "translationY", menuViewY - 970, menuViewY);
-        animateSettingBtnDown = ObjectAnimator.ofFloat(settingsBtn, "translationY", settingsBtnY, settingsBtnY + 42);
+        animateSettingBtnDown = ObjectAnimator.ofFloat(settingsBtn, "translationY", settingsBtnY, settingsBtnY + 27);
 
         animateSettingBtnLeft = ObjectAnimator.ofFloat(settingsBtn, "translationX", settingsBtnX, settingsBtnX - 315);
         animateSettingBtnRight = ObjectAnimator.ofFloat(settingsBtn, "translationX", settingsBtnX - 315, settingsBtnX);
@@ -126,6 +132,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         switch (v.getId()){
             case (R.id.onePlayer):
                 onePlayer = true;
+                pickHeader.setText(R.string.pick_color);
             case (R.id.twoPlayer):
                 AnimatorSet animatorSet = new AnimatorSet();
                 animatorSet.playTogether(animateMenuViewDown, animateScoreBoardDown);
@@ -194,7 +201,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             });
 
             animatorSettingsBtn.playTogether(animateSettingBtnDown, animateSettingBtnLeft);
-            animatorSettingsBtn.setDuration(200);
+            animatorSettingsBtn.setDuration(300);
             animatorSettingsBtn.setStartDelay(100);
             animatorSettingsBtn.start();
 
@@ -228,13 +235,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 twoPlayerBtn.setVisibility(View.VISIBLE);
             });
 
-            animateSettingBtnDown.setDuration(50);
-            animateSettingBtnLeft.setDuration(200);
             animatorSettingsBtn.playTogether(animateSettingBtnUp, animateSettingBtnRight);
+            animatorSettingsBtn.setDuration(300);
+            animatorSettingsBtn.setStartDelay(100);
             animatorSettingsBtn.start();
 
             settingsBtnParams.width = 375;
-            settingsBtnParams.height = 90;
+            settingsBtnParams.height = 103;
             settingsBtn.setLayoutParams(settingsBtnParams);
 
             settingsBtnHeader.setText(R.string.settingsHeader);
@@ -247,5 +254,42 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             menuParams.width = 512;
             menuView.setLayoutParams(menuParams);
         }
+    }
+
+    public static boolean areDrawablesIdentical(Drawable drawableA, Drawable drawableB){
+
+        Drawable.ConstantState stateA = drawableA.getConstantState();
+        Drawable.ConstantState stateB = drawableB.getConstantState();
+
+        // If the constant state is identical, they are using the same drawable resource.
+        // However, the opposite is not necessarily true.
+        return (stateA != null && stateB != null && stateA.equals(stateB))
+                || getBitmap(drawableA).sameAs(getBitmap(drawableB));
+    }
+
+    public static Bitmap getBitmap(Drawable drawable) {
+
+        Bitmap result;
+
+        if (drawable instanceof BitmapDrawable) {
+            result = ((BitmapDrawable) drawable).getBitmap();
+        } else {
+            int width = drawable.getIntrinsicWidth();
+            int height = drawable.getIntrinsicHeight();
+            // Some drawables have no intrinsic width - e.g. solid colours.
+            if (width <= 0) {
+                width = 1;
+            }
+            if (height <= 0) {
+                height = 1;
+            }
+
+            result = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+            Canvas canvas = new Canvas(result);
+            drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
+            drawable.draw(canvas);
+        }
+
+        return result;
     }
 }
