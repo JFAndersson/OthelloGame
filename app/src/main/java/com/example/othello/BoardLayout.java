@@ -1,5 +1,10 @@
 package com.example.othello;
 
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
+import android.app.Activity;
+import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 
 import androidx.appcompat.content.res.AppCompatResources;
@@ -15,21 +20,37 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import java.time.Duration;
+import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Objects;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 public class BoardLayout extends Fragment implements View.OnClickListener {
 
     //region declarations
 
     public static ArrayList<ArrayList<ImageView>> store_circles = new ArrayList<>();
-    public static int rowIndexClicked = 0;
+    public static ArrayList<ArrayList<ImageView>> store_circles_future = new ArrayList<>();
 
     private View view;
-    private CardView shadowColor;
-    private ImageView gameBackground;
-    private ImageView clickedVariable;
+    public static View blackTint;
 
-    boolean firstLoad = false;
+    public static boolean finalConversionResult = false;
+
+    public static CardView whiteVisualizer;
+    public static CardView blackVisualizer;
+    public static CardView boardArea;
+
+    private ImageView clickedVariable;
+    public static ImageView userWhiteImage;
+    public static ImageView userBlackImage;
+
+    private static int loopCount = 0;
 
     private ImageView circleA1; private ImageView circleB1;
     private ImageView circleA2; private ImageView circleB2;
@@ -72,13 +93,19 @@ public class BoardLayout extends Fragment implements View.OnClickListener {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
         // Inflate the layout for this fragment
         view = inflater.inflate(R.layout.fragment_board_layout, container, false);
 
         //region instantiations
 
-        gameBackground = view.findViewById(R.id.gameBackground);
-        shadowColor = view.findViewById(R.id.shadowColor);
+        blackTint = view.findViewById(R.id.blackTint);
+        whiteVisualizer = view.findViewById(R.id.whiteVisualizer);
+        blackVisualizer = view.findViewById(R.id.blackVisualizer);
+        boardArea = view.findViewById(R.id.shadowColor);
+
+        userWhiteImage = view.findViewById(R.id.userWhiteImage);
+        userBlackImage = view.findViewById(R.id.userBlackImage);
 
         circleA1 = view.findViewById(R.id.circleA1); circleB1 = view.findViewById(R.id.circleB1);
         circleA2 = view.findViewById(R.id.circleA2); circleB2 = view.findViewById(R.id.circleB2);
@@ -163,332 +190,484 @@ public class BoardLayout extends Fragment implements View.OnClickListener {
             }
         }
 
-        gameBackground.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(clickedVariable.getContext(), "Bakgrund", Toast.LENGTH_SHORT).show();
-            }
-        });
-
         //endregion
-
-        if (!firstLoad){
-            for (ArrayList<ImageView> row : store_circles){
-                for (ImageView image : row){
-                    if (image != circleD4 && image != circleD5 && image != circleE4 && image != circleE5){
-                        image.setImageAlpha(0);
-                    }
-                }
-            }
-
-            if (getActivity() != null){
-                circleD4.setImageDrawable(AppCompatResources.getDrawable(getActivity(), R.drawable.white_circle78));
-                circleD5.setImageDrawable(AppCompatResources.getDrawable(getActivity(), R.drawable.black_circle78));
-                circleE4.setImageDrawable(AppCompatResources.getDrawable(getActivity(), R.drawable.black_circle78));
-                circleE5.setImageDrawable(AppCompatResources.getDrawable(getActivity(), R.drawable.white_circle78));
-
-                circleD4.setClickable(false);
-                circleD5.setClickable(false);
-                circleE4.setClickable(false);
-                circleE5.setClickable(false);
-            }
-
-            //TODO: Help indicators
-            if (MainActivity.placementHelp){
-                HelpIndicators.activateIndicators(circleA1);
-            }
-
-            if (MainActivity.colorWhite){
-                shadowColor.setOutlineSpotShadowColor(getResources().getColor(R.color.white, null));
-            }
-            else{
-                shadowColor.setOutlineSpotShadowColor(getResources().getColor(R.color.black, null));
-            }
-
-            firstLoad = true;
-        }
 
         return view;
     }
 
+    public static void activateStartingView(Activity getActivity){
+
+        for (ArrayList<ImageView> row : store_circles){
+            for (ImageView image : row){
+                image.setImageAlpha(0);
+            }
+        }
+
+        //ImageView circleA1 = getActivity.findViewById(R.id.circleA1);
+        ImageView circleD4 = getActivity.findViewById(R.id.circleD4);
+        ImageView circleD5 = getActivity.findViewById(R.id.circleD5);
+        ImageView circleE4 = getActivity.findViewById(R.id.circleE4);
+        ImageView circleE5 = getActivity.findViewById(R.id.circleE5);
+        //ImageView circleH8 = getActivity.findViewById(R.id.circleH8);
+
+        ObjectAnimator returnScaleY = ObjectAnimator.ofFloat(boardArea, "scaleY", 0.7f, 1.0f);
+        ObjectAnimator returnScaleX = ObjectAnimator.ofFloat(boardArea, "scaleX", 0.7f, 1.0f);
+
+        AnimatorSet animatorSet = new AnimatorSet();
+
+        for (ArrayList<ImageView> row : store_circles){
+            for (ImageView image : row){
+
+                /*
+                image.setImageAlpha(255);
+
+                if (!image.equals(circleA1) && !image.equals(circleH8)){
+                    image.setImageDrawable(AppCompatResources.getDrawable(getActivity, R.drawable.white_circle78));
+                    image.setClickable(false);
+                }
+                else if (image.equals(circleA1)){
+                    image.setImageDrawable(AppCompatResources.getDrawable(getActivity, R.drawable.black_circle78));
+                    image.setClickable(false);
+                }
+
+                 */
+
+                switch (image.getId()){
+                    case (R.id.circleD4):
+                    case (R.id.circleD5):
+                    case (R.id.circleE4):
+                    case (R.id.circleE5):
+                        image.setImageAlpha(255);
+                        break;
+                    default:
+                        if (MainActivity.gameCount > 0){
+                            image.setImageDrawable(AppCompatResources.getDrawable(getActivity, R.drawable.transparent_circle78));
+                            image.setImageAlpha(0);
+                        }
+                }
+            }
+        }
+
+
+        try{
+            circleD4.setImageDrawable(AppCompatResources.getDrawable(getActivity, R.drawable.white_circle78));
+            circleD5.setImageDrawable(AppCompatResources.getDrawable(getActivity, R.drawable.black_circle78));
+            circleE4.setImageDrawable(AppCompatResources.getDrawable(getActivity, R.drawable.black_circle78));
+            circleE5.setImageDrawable(AppCompatResources.getDrawable(getActivity, R.drawable.white_circle78));
+
+            circleD4.setClickable(false);
+            circleD5.setClickable(false);
+            circleE4.setClickable(false);
+            circleE5.setClickable(false);
+        }
+        catch (Exception ignored){}
+
+        //blackTint.animate().alpha(0).setDuration(500);
+
+        animatorSet.playTogether(returnScaleX, returnScaleY);
+        animatorSet.setDuration(500);
+        animatorSet.start();
+
+        if (MainActivity.onePlayer && MainActivity.colorWhite){
+            userBlackImage.setImageDrawable(AppCompatResources.getDrawable(getActivity, R.drawable.computerblack));
+        }
+        else if (MainActivity.onePlayer){
+            userWhiteImage.setImageDrawable(AppCompatResources.getDrawable(getActivity, R.drawable.computerwhite));
+        }
+
+        boardArea.animate().alpha(1).setDuration(200);
+        whiteVisualizer.animate().alpha(1).setDuration(200);
+        blackVisualizer.animate().alpha(1).setDuration(200);
+
+        TransitionManager.beginDelayedTransition(whiteVisualizer, new TransitionSet());
+        TransitionManager.beginDelayedTransition(blackVisualizer, new TransitionSet());
+
+        alterVisualiser();
+
+        //TODO: Help indicators
+        if (MainActivity.placementHelp){
+            Indicators.activateIndicators(false);
+        }
+
+        MainActivity.gameCount++;
+        MainActivity.timeStart = Instant.now();
+    }
+
     @Override
     public void onClick(View v) {
-
         if (getActivity() != null){
             switch (v.getId()){
                 case (R.id.circleA1):
                     clickedVariable = view.findViewById(R.id.circleA1);
-                    rowIndexClicked = 0;
                     break;
                 case (R.id.circleA2):
                     clickedVariable = view.findViewById(R.id.circleA2);
-                    rowIndexClicked = 0;
                     break;
                 case (R.id.circleA3):
                     clickedVariable = view.findViewById(R.id.circleA3);
-                    rowIndexClicked = 0;
                     break;
                 case (R.id.circleA4):
                     clickedVariable = view.findViewById(R.id.circleA4);
-                    rowIndexClicked = 0;
                     break;
                 case (R.id.circleA5):
                     clickedVariable = view.findViewById(R.id.circleA5);
-                    rowIndexClicked = 0;
                     break;
                 case (R.id.circleA6):
                     clickedVariable = view.findViewById(R.id.circleA6);
-                    rowIndexClicked = 0;
                     break;
                 case (R.id.circleA7):
                     clickedVariable = view.findViewById(R.id.circleA7);
-                    rowIndexClicked = 0;
                     break;
                 case (R.id.circleA8):
                     clickedVariable = view.findViewById(R.id.circleA8);
-                    rowIndexClicked = 0;
                     break;
                 case (R.id.circleB1):
                     clickedVariable = view.findViewById(R.id.circleB1);
-                    rowIndexClicked = 1;
                     break;
                 case (R.id.circleB2):
                     clickedVariable = view.findViewById(R.id.circleB2);
-                    rowIndexClicked = 1;
                     break;
                 case (R.id.circleB3):
                     clickedVariable = view.findViewById(R.id.circleB3);
-                    rowIndexClicked = 1;
                     break;
                 case (R.id.circleB4):
                     clickedVariable = view.findViewById(R.id.circleB4);
-                    rowIndexClicked = 1;
                     break;
                 case (R.id.circleB5):
                     clickedVariable = view.findViewById(R.id.circleB5);
-                    rowIndexClicked = 1;
                     break;
                 case (R.id.circleB6):
                     clickedVariable = view.findViewById(R.id.circleB6);
-                    rowIndexClicked = 1;
                     break;
                 case (R.id.circleB7):
                     clickedVariable = view.findViewById(R.id.circleB7);
-                    rowIndexClicked = 1;
                     break;
                 case (R.id.circleB8):
                     clickedVariable = view.findViewById(R.id.circleB8);
-                    rowIndexClicked = 1;
                     break;
                 case (R.id.circleC1):
                     clickedVariable = view.findViewById(R.id.circleC1);
-                    rowIndexClicked = 2;
                     break;
                 case (R.id.circleC2):
                     clickedVariable = view.findViewById(R.id.circleC2);
-                    rowIndexClicked = 2;
                     break;
                 case (R.id.circleC3):
                     clickedVariable = view.findViewById(R.id.circleC3);
-                    rowIndexClicked = 2;
                     break;
                 case (R.id.circleC4):
                     clickedVariable = view.findViewById(R.id.circleC4);
-                    rowIndexClicked = 2;
                     break;
                 case (R.id.circleC5):
                     clickedVariable = view.findViewById(R.id.circleC5);
-                    rowIndexClicked = 2;
                     break;
                 case (R.id.circleC6):
                     clickedVariable = view.findViewById(R.id.circleC6);
-                    rowIndexClicked = 2;
                     break;
                 case (R.id.circleC7):
                     clickedVariable = view.findViewById(R.id.circleC7);
-                    rowIndexClicked = 2;
                     break;
                 case (R.id.circleC8):
                     clickedVariable = view.findViewById(R.id.circleC8);
-                    rowIndexClicked = 2;
                     break;
                 case (R.id.circleD1):
                     clickedVariable = view.findViewById(R.id.circleD1);
-                    rowIndexClicked = 3;
                     break;
                 case (R.id.circleD2):
                     clickedVariable = view.findViewById(R.id.circleD2);
-                    rowIndexClicked = 3;
                     break;
                 case (R.id.circleD3):
                     clickedVariable = view.findViewById(R.id.circleD3);
-                    rowIndexClicked = 3;
                     break;
                 case (R.id.circleD4):
                     clickedVariable = view.findViewById(R.id.circleD4);
-                    rowIndexClicked = 3;
                     break;
                 case (R.id.circleD5):
                     clickedVariable = view.findViewById(R.id.circleD5);
-                    rowIndexClicked = 3;
                     break;
                 case (R.id.circleD6):
                     clickedVariable = view.findViewById(R.id.circleD6);
-                    rowIndexClicked = 3;
                     break;
                 case (R.id.circleD7):
                     clickedVariable = view.findViewById(R.id.circleD7);
-                    rowIndexClicked = 3;
                     break;
                 case (R.id.circleD8):
                     clickedVariable = view.findViewById(R.id.circleD8);
-                    rowIndexClicked = 3;
                     break;
                 case (R.id.circleE1):
                     clickedVariable = view.findViewById(R.id.circleE1);
-                    rowIndexClicked = 4;
                     break;
                 case (R.id.circleE2):
                     clickedVariable = view.findViewById(R.id.circleE2);
-                    rowIndexClicked = 4;
                     break;
                 case (R.id.circleE3):
                     clickedVariable = view.findViewById(R.id.circleE3);
-                    rowIndexClicked = 4;
                     break;
                 case (R.id.circleE4):
                     clickedVariable = view.findViewById(R.id.circleE4);
-                    rowIndexClicked = 4;
                     break;
                 case (R.id.circleE5):
                     clickedVariable = view.findViewById(R.id.circleE5);
-                    rowIndexClicked = 4;
                     break;
                 case (R.id.circleE6):
                     clickedVariable = view.findViewById(R.id.circleE6);
-                    rowIndexClicked = 4;
                     break;
                 case (R.id.circleE7):
                     clickedVariable = view.findViewById(R.id.circleE7);
-                    rowIndexClicked = 4;
                     break;
                 case (R.id.circleE8):
                     clickedVariable = view.findViewById(R.id.circleE8);
-                    rowIndexClicked = 4;
                     break;
                 case (R.id.circleF1):
                     clickedVariable = view.findViewById(R.id.circleF1);
-                    rowIndexClicked = 5;
                     break;
                 case (R.id.circleF2):
                     clickedVariable = view.findViewById(R.id.circleF2);
-                    rowIndexClicked = 5;
                     break;
                 case (R.id.circleF3):
                     clickedVariable = view.findViewById(R.id.circleF3);
-                    rowIndexClicked = 5;
                     break;
                 case (R.id.circleF4):
                     clickedVariable = view.findViewById(R.id.circleF4);
-                    rowIndexClicked = 5;
                     break;
                 case (R.id.circleF5):
                     clickedVariable = view.findViewById(R.id.circleF5);
-                    rowIndexClicked = 5;
                     break;
                 case (R.id.circleF6):
                     clickedVariable = view.findViewById(R.id.circleF6);
-                    rowIndexClicked = 5;
                     break;
                 case (R.id.circleF7):
                     clickedVariable = view.findViewById(R.id.circleF7);
-                    rowIndexClicked = 5;
                     break;
                 case (R.id.circleF8):
                     clickedVariable = view.findViewById(R.id.circleF8);
-                    rowIndexClicked = 5;
                     break;
                 case (R.id.circleG1):
                     clickedVariable = view.findViewById(R.id.circleG1);
-                    rowIndexClicked = 6;
                     break;
                 case (R.id.circleG2):
                     clickedVariable = view.findViewById(R.id.circleG2);
-                    rowIndexClicked = 6;
                     break;
                 case (R.id.circleG3):
                     clickedVariable = view.findViewById(R.id.circleG3);
-                    rowIndexClicked = 6;
                     break;
                 case (R.id.circleG4):
                     clickedVariable = view.findViewById(R.id.circleG4);
-                    rowIndexClicked = 6;
                     break;
                 case (R.id.circleG5):
                     clickedVariable = view.findViewById(R.id.circleG5);
-                    rowIndexClicked = 6;
                     break;
                 case (R.id.circleG6):
                     clickedVariable = view.findViewById(R.id.circleG6);
-                    rowIndexClicked = 6;
                     break;
                 case (R.id.circleG7):
                     clickedVariable = view.findViewById(R.id.circleG7);
-                    rowIndexClicked = 6;
                     break;
                 case (R.id.circleG8):
                     clickedVariable = view.findViewById(R.id.circleG8);
-                    rowIndexClicked = 6;
                     break;
                 case (R.id.circleH1):
                     clickedVariable = view.findViewById(R.id.circleH1);
-                    rowIndexClicked = 7;
                     break;
                 case (R.id.circleH2):
                     clickedVariable = view.findViewById(R.id.circleH2);
-                    rowIndexClicked = 7;
                     break;
                 case (R.id.circleH3):
                     clickedVariable = view.findViewById(R.id.circleH3);
-                    rowIndexClicked = 7;
                     break;
                 case (R.id.circleH4):
                     clickedVariable = view.findViewById(R.id.circleH4);
-                    rowIndexClicked = 7;
                     break;
                 case (R.id.circleH5):
                     clickedVariable = view.findViewById(R.id.circleH5);
-                    rowIndexClicked = 7;
                     break;
                 case (R.id.circleH6):
                     clickedVariable = view.findViewById(R.id.circleH6);
-                    rowIndexClicked = 7;
                     break;
                 case (R.id.circleH7):
                     clickedVariable = view.findViewById(R.id.circleH7);
-                    rowIndexClicked = 7;
                     break;
                 case (R.id.circleH8):
                     clickedVariable = view.findViewById(R.id.circleH8);
-                    rowIndexClicked = 7;
                     break;
+                default:
             }
 
-            if (GameFramework.checkProximity(clickedVariable)){
+            Framework.setProximity(clickedVariable, false);
 
-                MainActivity.colorWhite = !MainActivity.colorWhite;
+            if (finalConversionResult){
 
-                if (MainActivity.colorWhite){
-                    shadowColor.setOutlineSpotShadowColor(getResources().getColor(R.color.white, null));
+                //region checkWin
+
+                Drawable whiteColor = Objects.requireNonNull(AppCompatResources.getDrawable(clickedVariable.getContext(), R.drawable.white_circle78));
+                Drawable blackColor = Objects.requireNonNull(AppCompatResources.getDrawable(clickedVariable.getContext(), R.drawable.black_circle78));
+
+                int whiteCount = 0;
+                int blackCount = 0;
+
+                for (ArrayList<ImageView> row : store_circles){
+                    for (ImageView imageView : row){
+                        if (MainActivity.areDrawablesIdentical(imageView.getDrawable(), whiteColor)){
+                            whiteCount++;
+                        }
+                        else if (MainActivity.areDrawablesIdentical(imageView.getDrawable(), blackColor)){
+                            blackCount++;
+                        }
+                    }
+                }
+
+                if (whiteCount + blackCount == 64 || (Indicators.helperCount == 0 && MainActivity.placementHelp)){
+                    MainActivity.gameWon = true;
+
+                    MainActivity.timeEnd = Instant.now();
+                    MainActivity.timeElapsed = Duration.between(MainActivity.timeStart, MainActivity.timeEnd).getSeconds();
+
+                    if (whiteCount > blackCount){
+                        MainActivity.gameWinner = "Vit";
+                    }
+                    else if (blackCount > whiteCount) {
+                        MainActivity.gameWinner = "Svart";
+                    }
+                    else{
+                        MainActivity.gameWinner = "Oavgjort";
+                    }
+                }
+
+                //endregion
+
+                if (!MainActivity.gameWon){
+
+                    MainActivity.colorWhite = !MainActivity.colorWhite;
+                    applyColor();
+                    alterVisualiser();
+
+                    //region ifComputersMove
+
+                    if (MainActivity.onePlayer){
+                        new java.util.Timer().schedule(
+                                new java.util.TimerTask() {
+                                    @Override
+                                    public void run() {
+                                        getActivity().runOnUiThread(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                ifOnePlayer();
+                                            }
+                                        });
+                                    }
+                                },
+                                1000
+                        );
+                    }
+
+                    //endregion
+
+                    if (MainActivity.placementHelp && !MainActivity.onePlayer){
+                        Indicators.activateIndicators(false);
+                    }
                 }
                 else{
-                    shadowColor.setOutlineSpotShadowColor(getResources().getColor(R.color.black, null));
-                }
+                    //region ifWon
 
-                if (MainActivity.placementHelp){
-                    HelpIndicators.activateIndicators(clickedVariable);
+                    ObjectAnimator downScaleY = ObjectAnimator.ofFloat(boardArea, "scaleY", 1.0f, 0.5f);
+                    ObjectAnimator downScaleX = ObjectAnimator.ofFloat(boardArea, "scaleX", 1.0f, 0.5f);
+
+                    AnimatorSet animatorSet = new AnimatorSet();
+
+                    animatorSet.playTogether(downScaleX, downScaleY);
+                    animatorSet.setDuration(500);
+                    animatorSet.start();
+
+                    animatorSet.play(MainActivity.animateEndScreenUp);
+                    animatorSet.setDuration(500);
+                    animatorSet.start();
+
+                    MainActivity.wonHeader.setText(String.format("Vinnare: %s", MainActivity.gameWinner));
+
+                    boardArea.animate().alpha(0).setDuration(200).withEndAction(() -> {
+                            /*
+                            boardArea.animate().translationXBy(800).setDuration(0).withEndAction(() -> {
+                                boardArea.animate().alpha(1).setDuration(200);
+                            });
+                             */
+                    });
+
+                    whiteVisualizer.animate().alpha(0).setDuration(200);
+                    blackVisualizer.animate().alpha(0).setDuration(200);
+
+                    //endregion
                 }
             }
+        }
+    }
+
+    private static void ifOnePlayer(){
+        try {
+            Computer.findPossiblePlacements();
+
+            MainActivity.colorWhite = !MainActivity.colorWhite;
+            applyColor();
+            alterVisualiser();
+
+            if (MainActivity.placementHelp){
+                Indicators.activateIndicators(false);
+            }
+        }
+        catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private static void alterVisualiser(){
+        if (MainActivity.colorWhite){
+            userBlackImage.animate().alpha(0).setDuration(200);
+            userWhiteImage.animate().alpha(1).setDuration(200);
+
+            //Toast.makeText(userWhiteImage.getContext(), "White Active", Toast.LENGTH_SHORT).show();
+
+            TransitionManager.beginDelayedTransition(blackVisualizer, new TransitionSet().addTransition(new ChangeBounds()));
+            ViewGroup.LayoutParams menuParams = blackVisualizer.getLayoutParams();
+            menuParams.width = 100;
+            menuParams.height = 100;
+            blackVisualizer.setLayoutParams(menuParams);
+
+            TransitionManager.beginDelayedTransition(whiteVisualizer, new TransitionSet().addTransition(new ChangeBounds()));
+            ViewGroup.LayoutParams newMenuParams = whiteVisualizer.getLayoutParams();
+            newMenuParams.width = 250;
+            newMenuParams.height = 250;
+            whiteVisualizer.setLayoutParams(newMenuParams);
+
+            //Toast.makeText(userBlackImage.getContext(), "White Active", Toast.LENGTH_SHORT).show();
+        }
+        else{
+            userBlackImage.animate().alpha(1).setDuration(200);
+            userWhiteImage.animate().alpha(0).setDuration(200);
+
+            //Toast.makeText(userBlackImage.getContext(), "Black Active", Toast.LENGTH_SHORT).show();
+
+            TransitionManager.beginDelayedTransition(whiteVisualizer, new TransitionSet().addTransition(new ChangeBounds()));
+            ViewGroup.LayoutParams menuParams = whiteVisualizer.getLayoutParams();
+            menuParams.width = 100;
+            menuParams.height = 100;
+            whiteVisualizer.setLayoutParams(menuParams);
+
+            TransitionManager.beginDelayedTransition(blackVisualizer, new TransitionSet().addTransition(new ChangeBounds()));
+            ViewGroup.LayoutParams newMenuParams = blackVisualizer.getLayoutParams();
+            newMenuParams.width = 250;
+            newMenuParams.height = 250;
+            blackVisualizer.setLayoutParams(newMenuParams);
+
+            //Toast.makeText(userBlackImage.getContext(), "Black Active", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private static void applyColor(){
+        if (MainActivity.colorWhite){
+            MainActivity.sameColor = Objects.requireNonNull(AppCompatResources.getDrawable(userWhiteImage.getContext(), R.drawable.white_circle78));
+            MainActivity.oppositeColor = Objects.requireNonNull(AppCompatResources.getDrawable(userWhiteImage.getContext(), R.drawable.black_circle78));
+        }
+        else{
+            MainActivity.sameColor = Objects.requireNonNull(AppCompatResources.getDrawable(userBlackImage.getContext(), R.drawable.black_circle78));
+            MainActivity.oppositeColor = Objects.requireNonNull(AppCompatResources.getDrawable(userBlackImage.getContext(), R.drawable.white_circle78));
         }
     }
 }

@@ -23,9 +23,11 @@
         android:layout_width="340dp"
         android:layout_height="400dp"
         android:layout_marginStart="575dp"
-        android:layout_marginBottom="-400dp"
+        android:layout_marginBottom="-430dp"
         app:cardCornerRadius="15dp"
-        app:cardElevation="5dp"
+        app:cardElevation="10dp"
+        app:strokeColor="@color/grey"
+        app:strokeWidth="1dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent">
 
@@ -54,8 +56,8 @@
                 android:clickable="true"
                 android:foreground="?android:attr/selectableItemBackground"
                 app:cardCornerRadius="15dp"
-                app:layout_constraintEnd_toEndOf="parent"
 
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/gameHeader"
                 app:strokeColor="@color/grey"
@@ -87,8 +89,8 @@
                 android:clickable="true"
                 android:foreground="?android:attr/selectableItemBackground"
                 app:cardCornerRadius="15dp"
-                app:layout_constraintEnd_toEndOf="parent"
 
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/onePlayer"
                 app:strokeColor="@color/grey"
@@ -120,8 +122,8 @@
                 android:clickable="true"
                 android:foreground="?android:attr/selectableItemBackground"
                 app:cardCornerRadius="15dp"
-                app:layout_constraintBottom_toBottomOf="parent"
 
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:strokeColor="@color/grey"
@@ -145,25 +147,6 @@
                 </androidx.constraintlayout.widget.ConstraintLayout>
             </com.google.android.material.card.MaterialCardView>
 
-            <com.google.android.material.switchmaterial.SwitchMaterial
-                android:id="@+id/toggleHelpBtn"
-                android:layout_width="wrap_content"
-                android:visibility="gone"
-                android:alpha="0"
-                android:layout_height="20dp"
-                android:scaleX="2"
-                android:scaleY="2"
-                android:textSize="10sp"
-                android:textColor="@color/grey"
-                android:text="Aktivera \n hjälpförslag"
-                android:textAlignment="textEnd"
-                app:switchPadding="10dp"
-                android:layout_marginTop="20dp"
-                android:layout_marginEnd="13dp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </com.google.android.material.card.MaterialCardView>
@@ -174,9 +157,9 @@
         android:layout_width="200dp"
         android:layout_height="400dp"
         android:layout_marginEnd="575dp"
-        android:layout_marginBottom="-400dp"
+        android:layout_marginBottom="-430dp"
         app:cardCornerRadius="15dp"
-        app:cardElevation="5dp"
+        app:cardElevation="10dp"
         app:strokeColor="@color/grey"
         app:strokeWidth="1dp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -199,6 +182,433 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
 
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/game1"
+                android:visibility="gone"
+                android:alpha="0"
+                android:layout_width="140dp"
+                android:layout_height="80dp"
+                android:layout_marginTop="35dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <View
+                    android:id="@+id/lineAboveA1"
+                    android:layout_width="120dp"
+                    android:layout_height="0.4dp"
+                    android:layout_marginTop="3dp"
+                    android:background="@color/grey"
+                    android:elevation="1dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/gameId1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginStart="8dp"
+                    android:text="Spel:"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/lineAboveA1" />
+
+                <TextView
+                    android:id="@+id/winnerHeader1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:text="Vinnare:"
+                    app:layout_constraintBottom_toTopOf="@+id/timeHeader1"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/gameId1" />
+
+                <TextView
+                    android:id="@+id/timeHeader1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginBottom="5dp"
+                    android:text="Tid:"
+                    app:layout_constraintBottom_toTopOf="@+id/lineBelowA1"
+                    app:layout_constraintStart_toStartOf="parent" />
+
+                <TextView
+                    android:id="@+id/gameIdHeaderA1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="10dp"
+                    android:text="Siffra"
+                    app:layout_constraintBottom_toBottomOf="@+id/gameId1"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/gameId1" />
+
+                <TextView
+                    android:id="@+id/winnerHeaderA1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="10dp"
+                    android:text="Färg"
+                    app:layout_constraintBottom_toBottomOf="@+id/winnerHeader1"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/winnerHeader1" />
+
+                <TextView
+                    android:id="@+id/timeHeaderA1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="10dp"
+                    android:text="Tid"
+                    app:layout_constraintBottom_toBottomOf="@+id/timeHeader1"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/timeHeader1" />
+
+                <View
+                    android:id="@+id/lineBelowA1"
+                    android:layout_width="120dp"
+                    android:layout_height="0.4dp"
+                    android:layout_marginBottom="3dp"
+                    android:background="@color/grey"
+                    android:elevation="1dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/game2"
+                android:visibility="gone"
+                android:alpha="0"
+                android:layout_width="140dp"
+                android:layout_height="80dp"
+                android:layout_marginTop="120dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <View
+                    android:id="@+id/lineAboveA2"
+                    android:layout_width="120dp"
+                    android:layout_height="0.4dp"
+                    android:layout_marginTop="3dp"
+                    android:background="@color/grey"
+                    android:elevation="1dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/gameId2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginStart="8dp"
+                    android:text="Spel:"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/lineAboveA2" />
+
+                <TextView
+                    android:id="@+id/winnerHeader2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:text="Vinnare:"
+                    app:layout_constraintBottom_toTopOf="@+id/timeHeader2"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/gameId2" />
+
+                <TextView
+                    android:id="@+id/timeHeader2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginBottom="5dp"
+                    android:text="Tid:"
+                    app:layout_constraintBottom_toTopOf="@+id/lineBelowA2"
+                    app:layout_constraintStart_toStartOf="parent" />
+
+                <TextView
+                    android:id="@+id/gameIdHeaderA2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="10dp"
+                    android:text="Siffra"
+                    app:layout_constraintBottom_toBottomOf="@+id/gameId2"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/gameId2" />
+
+                <TextView
+                    android:id="@+id/winnerHeaderA2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="10dp"
+                    android:text="Färg"
+                    app:layout_constraintBottom_toBottomOf="@+id/winnerHeader2"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/winnerHeader2" />
+
+                <TextView
+                    android:id="@+id/timeHeaderA2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="10dp"
+                    android:text="Tid"
+                    app:layout_constraintBottom_toBottomOf="@+id/timeHeader2"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/timeHeader2" />
+
+                <View
+                    android:id="@+id/lineBelowA2"
+                    android:layout_width="120dp"
+                    android:layout_height="0.4dp"
+                    android:layout_marginBottom="3dp"
+                    android:background="@color/grey"
+                    android:elevation="1dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/game3"
+                android:visibility="gone"
+                android:alpha="0"
+                android:layout_width="140dp"
+                android:layout_height="80dp"
+                android:layout_marginTop="205dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <View
+                    android:id="@+id/lineAboveA3"
+                    android:layout_width="120dp"
+                    android:layout_height="0.4dp"
+                    android:layout_marginTop="3dp"
+                    android:background="@color/grey"
+                    android:elevation="1dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/gameId3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginStart="8dp"
+                    android:text="Spel:"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/lineAboveA3" />
+
+                <TextView
+                    android:id="@+id/winnerHeader3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:text="Vinnare:"
+                    app:layout_constraintBottom_toTopOf="@+id/timeHeader3"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/gameId3" />
+
+                <TextView
+                    android:id="@+id/timeHeader3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginBottom="5dp"
+                    android:text="Tid:"
+                    app:layout_constraintBottom_toTopOf="@+id/lineBelowA3"
+                    app:layout_constraintStart_toStartOf="parent" />
+
+                <TextView
+                    android:id="@+id/gameIdHeaderA3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="10dp"
+                    android:text="Siffra"
+                    app:layout_constraintBottom_toBottomOf="@+id/gameId3"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/gameId3" />
+
+                <TextView
+                    android:id="@+id/winnerHeaderA3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="10dp"
+                    android:text="Färg"
+                    app:layout_constraintBottom_toBottomOf="@+id/winnerHeader3"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/winnerHeader3" />
+
+                <TextView
+                    android:id="@+id/timeHeaderA3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="10dp"
+                    android:text="Tid"
+                    app:layout_constraintBottom_toBottomOf="@+id/timeHeader3"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/timeHeader3" />
+
+                <View
+                    android:id="@+id/lineBelowA3"
+                    android:layout_width="120dp"
+                    android:layout_height="0.4dp"
+                    android:layout_marginBottom="3dp"
+                    android:background="@color/grey"
+                    android:elevation="1dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/clearGameData"
+                android:layout_width="140dp"
+                android:layout_height="40dp"
+                android:visibility="gone"
+                android:alpha="0"
+
+                android:clickable="true"
+                android:foreground="?android:attr/selectableItemBackground"
+                app:cardCornerRadius="15dp"
+
+                app:strokeColor="@color/grey"
+                app:strokeWidth="1dp"
+
+                android:layout_marginBottom="40.5dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Rensa spelhistorik"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </com.google.android.material.card.MaterialCardView>
+
+
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/settingsMenu"
+        android:layout_width="200dp"
+        android:layout_height="400dp"
+        android:layout_marginEnd="575dp"
+        android:layout_marginBottom="-430dp"
+        app:cardCornerRadius="15dp"
+        app:cardElevation="10dp"
+        app:strokeColor="@color/grey"
+        app:strokeWidth="1dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+
+            <TextView
+                android:id="@+id/activateHelpHeader"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="25dp"
+                android:text="Aktivera hjälp"
+                android:textSize="20sp"
+                app:layout_constraintBottom_toTopOf="@+id/toggleHelpBtn"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent" />
+
+            <com.google.android.material.switchmaterial.SwitchMaterial
+                android:id="@+id/toggleHelpBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="20dp"
+                android:layout_marginTop="90dp"
+                android:alpha="1"
+                android:scaleX="2"
+                android:scaleY="2"
+                android:textAlignment="textStart"
+                android:textColor="@color/grey"
+                android:textSize="10sp"
+                android:visibility="visible"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:switchPadding="10dp" />
+
+            <TextView
+                android:id="@+id/textView2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="40dp"
+                android:text="Datorns \n svårighetsgrad"
+                android:textAlignment="center"
+                android:textSize="20sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/toggleHelpBtn" />
+
+            <RadioGroup
+                android:id="@+id/radioGroup"
+                android:layout_width="90dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textView2">
+
+                <RadioButton
+                    android:id="@+id/difficultyBtn1"
+                    android:text="Enkel"
+                    android:scaleY="1.2"
+                    android:scaleX="1.2"
+                    android:textColor="@color/grey"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+
+                <RadioButton
+                    android:id="@+id/difficultyBtn2"
+                    android:text="Svår"
+                    android:scaleY="1.2"
+                    android:scaleX="1.2"
+                    android:textColor="@color/grey"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+
+                <RadioButton
+                    android:id="@+id/difficultyBtn3"
+                    android:text="Omöjlig"
+                    android:scaleY="1.2"
+                    android:scaleX="1.2"
+                    android:textColor="@color/grey"
+                    android:layout_marginLeft="1.7dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+
+            </RadioGroup>
+
+
         </androidx.constraintlayout.widget.ConstraintLayout>
     </com.google.android.material.card.MaterialCardView>
 
@@ -207,9 +617,11 @@
         android:id="@+id/pickColor"
         android:layout_width="340dp"
         android:layout_height="400dp"
-        android:layout_marginBottom="-400dp"
+        android:layout_marginBottom="-430dp"
         app:cardCornerRadius="15dp"
-        app:cardElevation="5dp"
+        app:cardElevation="10dp"
+        app:strokeColor="@color/grey"
+        app:strokeWidth="1dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
@@ -297,6 +709,101 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
     </com.google.android.material.card.MaterialCardView>
 
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/endScreen"
+        android:layout_width="340dp"
+        android:layout_height="400dp"
+        android:layout_marginBottom="-430dp"
+        app:cardCornerRadius="15dp"
+        android:elevation="2dp"
+        app:cardElevation="10dp"
+        app:strokeColor="@color/grey"
+        app:strokeWidth="1dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
 
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:id="@+id/wonHeader"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="55dp"
+                android:text="Vinnare: "
+                android:textSize="40sp"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/returnToMenu"
+                android:layout_width="250dp"
+                android:layout_height="90dp"
+                android:layout_marginTop="50dp"
+                android:clickable="true"
+                android:foreground="?android:attr/selectableItemBackground"
+                app:cardCornerRadius="15dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/wonHeader"
+                app:strokeColor="@color/grey"
+                app:strokeWidth="1dp">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Återgå till huvudmeny"
+                        android:textSize="17sp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/playAgain"
+                android:layout_width="250dp"
+                android:layout_height="90dp"
+                android:layout_marginTop="10dp"
+
+                android:clickable="true"
+                android:foreground="?android:attr/selectableItemBackground"
+                app:cardCornerRadius="15dp"
+                app:layout_constraintEnd_toEndOf="parent"
+
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/returnToMenu"
+                app:strokeColor="@color/grey"
+                app:strokeWidth="1dp">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Spela igen!"
+                        android:textSize="17sp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </com.google.android.material.card.MaterialCardView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
