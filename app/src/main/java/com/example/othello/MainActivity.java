@@ -32,19 +32,23 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     //region declarations
 
-    public static Instant timeStart;
-    public static Instant timeEnd;
     public static long timeElapsed;
 
     public static String gameWinner;
     public static int gameCount;
     public static float menuViewY;
+    public static float expandBoardX;
+    public static float gameBoardX;
+    public static float endViewX;
     public static float pickViewY;
 
     private boolean firstLoad = false;
     private boolean settingsActive = false;
+    public static boolean endScreenExpanded = false;
     public static boolean onePlayer = false;
+
     public static boolean colorWhite = false;
+
     public static boolean placementHelp = false;
     public static boolean gameWon = false;
     private boolean playAgain = false;
@@ -59,6 +63,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private CardView settingsBtn;
     private CardView returnToMenuBtn;
     private CardView playAgainBtn;
+    private CardView expandBoard;
 
     public static ConstraintLayout game1;
     public static ConstraintLayout game2;
@@ -87,17 +92,26 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private RadioButton difficultyBtn2;
     private RadioButton difficultyBtn3;
 
+    public static ObjectAnimator animateSettingsMenuUp;
+    public static ObjectAnimator animateSettingsMenuDown;
+
     public static ObjectAnimator animateMenuViewUp;
     public static ObjectAnimator animateScoreBoardUp;
     public static ObjectAnimator animateEndScreenUp;
     public static ObjectAnimator animateEndScreenDown;
+    public static ObjectAnimator animateExpandBtnUp;
+    public static ObjectAnimator animateExpandBtnDown;
     private ObjectAnimator animateMenuViewDown;
     private ObjectAnimator animateScoreBoardDown;
     private ObjectAnimator animatePickMenuDown;
     private ObjectAnimator animatePickMenuUp;
 
-    public static ObjectAnimator animateSettingsMenuUp;
-    public static ObjectAnimator animateSettingsMenuDown;
+    public static ObjectAnimator animateEndScreenRight;
+    public static ObjectAnimator animateExpandBtnRight;
+    public static ObjectAnimator animateEndScreenLeft;
+    public static ObjectAnimator animateExpandBtnLeft;
+
+
 
     public static Drawable oppositeColor;
     public static Drawable sameColor;
@@ -126,6 +140,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         settingsBtnText = findViewById(R.id.settingsBtnHeader);
         returnToMenuBtn = findViewById(R.id.returnToMenu);
         playAgainBtn = findViewById(R.id.playAgain);
+        expandBoard = findViewById(R.id.expandBoard);
 
         game1 = findViewById(R.id.game1);
         game2 = findViewById(R.id.game2);
@@ -154,16 +169,25 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         animateMenuViewUp = ObjectAnimator.ofFloat(menuView, "translationY", menuViewY, menuViewY - 970);
         animateEndScreenUp = ObjectAnimator.ofFloat(endScreen, "translationY", menuViewY, menuViewY - 970);
+        animateExpandBtnUp = ObjectAnimator.ofFloat(expandBoard, "translationY", menuViewY, menuViewY - 970);
         animateScoreBoardUp = ObjectAnimator.ofFloat(scoreBoard, "translationY", menuViewY, menuViewY - 970);
         animatePickMenuUp = ObjectAnimator.ofFloat(pickColor, "translationY", menuViewY, menuViewY - 970);
 
         animateMenuViewDown = ObjectAnimator.ofFloat(menuView,"translationY",menuViewY - 970, menuViewY);
         animateEndScreenDown = ObjectAnimator.ofFloat(endScreen, "translationY", menuViewY - 970, menuViewY);
+        animateExpandBtnDown = ObjectAnimator.ofFloat(expandBoard, "translationY", menuViewY - 970, menuViewY);
         animateScoreBoardDown = ObjectAnimator.ofFloat(scoreBoard,"translationY",menuViewY - 970, menuViewY);
         animatePickMenuDown = ObjectAnimator.ofFloat(pickColor, "translationY", menuViewY - 970, menuViewY);
 
         animateSettingsMenuUp = ObjectAnimator.ofFloat(settingsMenu, "translationY", menuViewY, menuViewY - 970);
         animateSettingsMenuDown = ObjectAnimator.ofFloat(settingsMenu, "translationY", menuViewY - 970, menuViewY);
+
+        int value = 610;
+
+        animateEndScreenRight = ObjectAnimator.ofFloat(endScreen, "translationX", endViewX, endViewX + value);
+        animateExpandBtnRight = ObjectAnimator.ofFloat(expandBoard, "translationX", expandBoardX, expandBoardX + value);
+        animateEndScreenLeft = ObjectAnimator.ofFloat(endScreen, "translationX", endViewX + value, endViewX);
+        animateExpandBtnLeft = ObjectAnimator.ofFloat(expandBoard, "translationX", expandBoardX + value, expandBoardX);
 
         emptyColor = Objects.requireNonNull(AppCompatResources.getDrawable(this, R.drawable.transparent_circle78));
 
@@ -177,11 +201,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         if (!firstLoad){
             menuViewY = menuView.getY();
+            endViewX = endScreen.getX();
+            expandBoardX = expandBoard.getX();
             pickViewY = menuViewY;
 
             Computer.initializeVariables(this);
-            difficultyBtn1.toggle();
-            Computer.difficulty1 = true;
+            difficultyBtn2.toggle();
+            Computer.difficulty2 = true;
 
             getSupportFragmentManager()
                     .beginTransaction()
@@ -201,6 +227,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         returnToMenuBtn.setOnClickListener(this);
         playAgainBtn.setOnClickListener(this);
         clearGameData.setOnClickListener(this);
+        expandBoard.setOnClickListener(this);
 
         difficultyBtn1.setOnClickListener(this);
         difficultyBtn2.setOnClickListener(this);
@@ -286,12 +313,36 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     }
                 }
 
-                timeElapsed = 0;
-                colorWhite = false;
-
                 AnimatorSet animatorSet_2 = new AnimatorSet();
 
-                animatorSet_2.play(animateEndScreenDown);
+                if (endScreenExpanded){
+
+                    AnimatorSet animatorSet4 = new AnimatorSet();
+                    TextView expandPointer = findViewById(R.id.expandPointer);
+
+                    animatorSet4.playTogether(MainActivity.animateEndScreenLeft, MainActivity.animateExpandBtnLeft);
+                    animatorSet4.setDuration(300);
+                    animatorSet4.start();
+
+                    BoardLayout.boardArea.animate().translationX(MainActivity.gameBoardX).setDuration(300);
+
+                    BoardLayout.boardArea.animate().alpha(0).setDuration(300);
+
+                    if (playAgain){
+                        BoardLayout.boardArea.animate().scaleX(1).setDuration(300);
+                        BoardLayout.boardArea.animate().scaleY(1).setDuration(300);
+                    }
+                    else{
+                        BoardLayout.boardArea.animate().scaleX(0.7f).setDuration(300);
+                        BoardLayout.boardArea.animate().scaleY(0.7f).setDuration(300);
+                    }
+
+                    expandPointer.setText("<");
+
+                    endScreenExpanded = false;
+                }
+
+                animatorSet_2.playTogether(animateEndScreenDown, animateExpandBtnDown);
                 animatorSet_2.setDuration(300);
                 animatorSet_2.start();
 
@@ -328,6 +379,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     default:
                 }
 
+                timeElapsed = 0;
+                Framework.firstLoad = false;
+                gameWon = false;
+
                 if (!playAgain){
 
                     if (settingsActive){
@@ -341,6 +396,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     animatorSet_2.start();
                 }
                 else{
+                    Framework.firstLoad = false;
                     BoardLayout.activateStartingView(this);
                     playAgain = false;
                 }
@@ -362,6 +418,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 Computer.difficulty2 = false;
 
                 Computer.difficulty3 = true;
+                break;
+            case (R.id.expandBoard):
+                TextView expandPointer = findViewById(R.id.expandPointer);
+                BoardLayout.expandBoard(expandPointer);
                 break;
             default:
         }

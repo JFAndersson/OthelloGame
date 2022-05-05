@@ -3,12 +3,12 @@ package com.example.othello;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.app.Activity;
-import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 
 import androidx.appcompat.content.res.AppCompatResources;
 import androidx.cardview.widget.CardView;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 
 import android.transition.ChangeBounds;
@@ -18,17 +18,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.Toast;
+import android.widget.TextView;
 
-import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Objects;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
 
 public class BoardLayout extends Fragment implements View.OnClickListener {
 
@@ -51,6 +45,7 @@ public class BoardLayout extends Fragment implements View.OnClickListener {
     public static ImageView userBlackImage;
 
     private static int loopCount = 0;
+    private static boolean firstLoad = false;
 
     private ImageView circleA1; private ImageView circleB1;
     private ImageView circleA2; private ImageView circleB2;
@@ -102,7 +97,7 @@ public class BoardLayout extends Fragment implements View.OnClickListener {
         blackTint = view.findViewById(R.id.blackTint);
         whiteVisualizer = view.findViewById(R.id.whiteVisualizer);
         blackVisualizer = view.findViewById(R.id.blackVisualizer);
-        boardArea = view.findViewById(R.id.shadowColor);
+        boardArea = view.findViewById(R.id.boardContainer);
 
         userWhiteImage = view.findViewById(R.id.userWhiteImage);
         userBlackImage = view.findViewById(R.id.userBlackImage);
@@ -180,6 +175,15 @@ public class BoardLayout extends Fragment implements View.OnClickListener {
         store_circles.add(rowE); store_circles.add(rowF);
         store_circles.add(rowG); store_circles.add(rowH);
 
+        addDesirable();
+
+
+        if (!firstLoad){
+            MainActivity.gameBoardX = boardArea.getX();
+            firstLoad = true;
+        }
+
+
         //endregion
 
         //region setListeners
@@ -218,7 +222,8 @@ public class BoardLayout extends Fragment implements View.OnClickListener {
         for (ArrayList<ImageView> row : store_circles){
             for (ImageView image : row){
 
-                /*
+/*
+
                 image.setImageAlpha(255);
 
                 if (!image.equals(circleA1) && !image.equals(circleH8)){
@@ -230,7 +235,7 @@ public class BoardLayout extends Fragment implements View.OnClickListener {
                     image.setClickable(false);
                 }
 
-                 */
+ */
 
                 switch (image.getId()){
                     case (R.id.circleD4):
@@ -262,7 +267,6 @@ public class BoardLayout extends Fragment implements View.OnClickListener {
         }
         catch (Exception ignored){}
 
-        //blackTint.animate().alpha(0).setDuration(500);
 
         animatorSet.playTogether(returnScaleX, returnScaleY);
         animatorSet.setDuration(500);
@@ -286,11 +290,10 @@ public class BoardLayout extends Fragment implements View.OnClickListener {
 
         //TODO: Help indicators
         if (MainActivity.placementHelp){
-            Indicators.activateIndicators(false);
+            Indicators.activateIndicators(false, false, false);
         }
 
         MainActivity.gameCount++;
-        MainActivity.timeStart = Instant.now();
     }
 
     @Override
@@ -496,44 +499,6 @@ public class BoardLayout extends Fragment implements View.OnClickListener {
 
             if (finalConversionResult){
 
-                //region checkWin
-
-                Drawable whiteColor = Objects.requireNonNull(AppCompatResources.getDrawable(clickedVariable.getContext(), R.drawable.white_circle78));
-                Drawable blackColor = Objects.requireNonNull(AppCompatResources.getDrawable(clickedVariable.getContext(), R.drawable.black_circle78));
-
-                int whiteCount = 0;
-                int blackCount = 0;
-
-                for (ArrayList<ImageView> row : store_circles){
-                    for (ImageView imageView : row){
-                        if (MainActivity.areDrawablesIdentical(imageView.getDrawable(), whiteColor)){
-                            whiteCount++;
-                        }
-                        else if (MainActivity.areDrawablesIdentical(imageView.getDrawable(), blackColor)){
-                            blackCount++;
-                        }
-                    }
-                }
-
-                if (whiteCount + blackCount == 64 || (Indicators.helperCount == 0 && MainActivity.placementHelp)){
-                    MainActivity.gameWon = true;
-
-                    MainActivity.timeEnd = Instant.now();
-                    MainActivity.timeElapsed = Duration.between(MainActivity.timeStart, MainActivity.timeEnd).getSeconds();
-
-                    if (whiteCount > blackCount){
-                        MainActivity.gameWinner = "Vit";
-                    }
-                    else if (blackCount > whiteCount) {
-                        MainActivity.gameWinner = "Svart";
-                    }
-                    else{
-                        MainActivity.gameWinner = "Oavgjort";
-                    }
-                }
-
-                //endregion
-
                 if (!MainActivity.gameWon){
 
                     MainActivity.colorWhite = !MainActivity.colorWhite;
@@ -562,7 +527,7 @@ public class BoardLayout extends Fragment implements View.OnClickListener {
                     //endregion
 
                     if (MainActivity.placementHelp && !MainActivity.onePlayer){
-                        Indicators.activateIndicators(false);
+                        Indicators.activateIndicators(false, false, false);
                     }
                 }
                 else{
@@ -577,7 +542,7 @@ public class BoardLayout extends Fragment implements View.OnClickListener {
                     animatorSet.setDuration(500);
                     animatorSet.start();
 
-                    animatorSet.play(MainActivity.animateEndScreenUp);
+                    animatorSet.playTogether(MainActivity.animateEndScreenUp, MainActivity.animateExpandBtnUp);
                     animatorSet.setDuration(500);
                     animatorSet.start();
 
@@ -609,7 +574,7 @@ public class BoardLayout extends Fragment implements View.OnClickListener {
             alterVisualiser();
 
             if (MainActivity.placementHelp){
-                Indicators.activateIndicators(false);
+                Indicators.activateIndicators(false, false, false);
             }
         }
         catch (InterruptedException e) {
@@ -660,7 +625,89 @@ public class BoardLayout extends Fragment implements View.OnClickListener {
         }
     }
 
-    private static void applyColor(){
+    public static void addDesirable(){
+
+        Framework.desirablePlacements.clear();
+
+        Drawable transparentColor = AppCompatResources.getDrawable(boardArea.getContext(), R.drawable.transparent_circle78);
+
+        if (MainActivity.areDrawablesIdentical(BoardLayout.store_circles.get(2).get(2).getDrawable(), transparentColor)){
+            Framework.desirablePlacements.add(BoardLayout.store_circles.get(2).get(2));
+        }
+        if (MainActivity.areDrawablesIdentical(BoardLayout.store_circles.get(2).get(5).getDrawable(), transparentColor)){
+            Framework.desirablePlacements.add(BoardLayout.store_circles.get(2).get(5));
+        }
+        if (MainActivity.areDrawablesIdentical(BoardLayout.store_circles.get(5).get(2).getDrawable(), transparentColor)){
+            Framework.desirablePlacements.add(BoardLayout.store_circles.get(5).get(2));
+        }
+        if (MainActivity.areDrawablesIdentical(BoardLayout.store_circles.get(5).get(5).getDrawable(), transparentColor)){
+            Framework.desirablePlacements.add(BoardLayout.store_circles.get(5).get(5));
+        }
+
+        for (int i = 0; i < 8; i++){
+            if (MainActivity.areDrawablesIdentical(BoardLayout.store_circles.get(0).get(i).getDrawable(), transparentColor)){
+                Framework.desirablePlacements.add(BoardLayout.store_circles.get(0).get(i));
+            }
+        }
+
+        for (int i = 1; i < 7; i++){
+            if (MainActivity.areDrawablesIdentical(BoardLayout.store_circles.get(i).get(7).getDrawable(), transparentColor)){
+                Framework.desirablePlacements.add(BoardLayout.store_circles.get(i).get(7));
+            }
+        }
+
+        for (int i = 7; i > -1; i--){
+            if (MainActivity.areDrawablesIdentical(BoardLayout.store_circles.get(7).get(i).getDrawable(), transparentColor)){
+                Framework.desirablePlacements.add(BoardLayout.store_circles.get(7).get(i));
+            }
+        }
+
+        for (int i = 6; i > 0; i--){
+            if (MainActivity.areDrawablesIdentical(BoardLayout.store_circles.get(i).get(0).getDrawable(), transparentColor)){
+                Framework.desirablePlacements.add(BoardLayout.store_circles.get(i).get(0));
+            }
+        }
+    }
+
+    public static void expandBoard(TextView expandPointer){
+
+        AnimatorSet animatorSet4 = new AnimatorSet();
+
+        TransitionManager.beginDelayedTransition(boardArea, new TransitionSet().addTransition(new ChangeBounds()));
+
+        if (!MainActivity.endScreenExpanded){
+            animatorSet4.playTogether(MainActivity.animateEndScreenRight, MainActivity.animateExpandBtnRight);
+            animatorSet4.setDuration(300);
+            animatorSet4.start();
+
+            boardArea.animate().translationX(MainActivity.gameBoardX - 400).setDuration(300);
+
+            BoardLayout.boardArea.animate().alpha(1).setDuration(300);
+            BoardLayout.boardArea.animate().scaleX(0.9f).setDuration(300);
+            BoardLayout.boardArea.animate().scaleY(0.9f).setDuration(300);
+
+            expandPointer.setText(">");
+
+            MainActivity.endScreenExpanded = true;
+        }
+        else{
+            animatorSet4.playTogether(MainActivity.animateEndScreenLeft, MainActivity.animateExpandBtnLeft);
+            animatorSet4.setDuration(300);
+            animatorSet4.start();
+
+            boardArea.animate().translationX(MainActivity.gameBoardX).setDuration(300);
+
+            BoardLayout.boardArea.animate().alpha(0).setDuration(300);
+            BoardLayout.boardArea.animate().scaleX(0.7f).setDuration(300);
+            BoardLayout.boardArea.animate().scaleY(0.7f).setDuration(300);
+
+            expandPointer.setText("<");
+
+            MainActivity.endScreenExpanded = false;
+        }
+    }
+
+    public static void applyColor(){
         if (MainActivity.colorWhite){
             MainActivity.sameColor = Objects.requireNonNull(AppCompatResources.getDrawable(userWhiteImage.getContext(), R.drawable.white_circle78));
             MainActivity.oppositeColor = Objects.requireNonNull(AppCompatResources.getDrawable(userWhiteImage.getContext(), R.drawable.black_circle78));

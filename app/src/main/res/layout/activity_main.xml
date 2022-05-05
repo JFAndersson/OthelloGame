@@ -117,15 +117,15 @@
                 android:id="@+id/settings"
                 android:layout_width="250dp"
                 android:layout_height="70dp"
-                android:layout_marginBottom="40.5dp"
+                android:layout_marginTop="10dp"
 
                 android:clickable="true"
                 android:foreground="?android:attr/selectableItemBackground"
                 app:cardCornerRadius="15dp"
 
-                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/twoPlayer"
                 app:strokeColor="@color/grey"
                 app:strokeWidth="1dp">
 
@@ -580,7 +580,7 @@
 
                 <RadioButton
                     android:id="@+id/difficultyBtn1"
-                    android:text="Enkel"
+                    android:text="Lätt"
                     android:scaleY="1.2"
                     android:scaleX="1.2"
                     android:textColor="@color/grey"
@@ -598,11 +598,12 @@
 
                 <RadioButton
                     android:id="@+id/difficultyBtn3"
-                    android:text="Omöjlig"
+                    android:text="Plåga"
                     android:scaleY="1.2"
+                    android:clickable="false"
                     android:scaleX="1.2"
                     android:textColor="@color/grey"
-                    android:layout_marginLeft="1.7dp"
+                    android:layout_marginLeft="1dp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"/>
 
@@ -713,6 +714,7 @@
         android:id="@+id/endScreen"
         android:layout_width="340dp"
         android:layout_height="400dp"
+        android:layout_marginLeft="40dp"
         android:layout_marginBottom="-430dp"
         app:cardCornerRadius="15dp"
         android:elevation="2dp"
@@ -802,6 +804,40 @@
                 </androidx.constraintlayout.widget.ConstraintLayout>
             </com.google.android.material.card.MaterialCardView>
 
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </com.google.android.material.card.MaterialCardView>
+
+
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/expandBoard"
+        android:layout_width="40dp"
+        android:layout_height="400dp"
+        android:layout_marginStart="650dp"
+        android:layout_marginBottom="-430dp"
+        app:cardCornerRadius="15dp"
+        app:cardElevation="10dp"
+        android:clickable="true"
+        android:foreground="?android:attr/selectableItemBackground"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:strokeColor="@color/grey"
+        app:strokeWidth="1dp">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:id="@+id/expandPointer"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/arrowLeft"
+                android:textSize="30sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </com.google.android.material.card.MaterialCardView>

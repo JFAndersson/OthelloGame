@@ -5,25 +5,39 @@ import android.graphics.drawable.Drawable;
 import android.media.Image;
 import android.provider.ContactsContract;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.content.res.AppCompatResources;
 
+import java.time.Duration;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Objects;
 
 public class Framework {
 
     //region declarations
 
+    public static Long timeStart;
+    public static Long timeEnd;
+
+    public static boolean firstLoad = false;
+
+    public static ArrayList<ImageView> desirablePlacements = new ArrayList<>();
+
+    public static ArrayList<ImageView> existingPlacements;
+
 
     //endregion
 
-    public static void setProximity(ImageView clickedVariable, boolean difficulty2) {
+    public static void setProximity(ImageView clickedVariable, boolean futureCheck) {
 
         int rowIndex;
         int colIndex;
@@ -31,19 +45,28 @@ public class Framework {
         int rowIndexCount = 0;
         boolean clickedCircle = false;
 
+        if (!firstLoad){
+            timeStart = System.nanoTime();
+            firstLoad = true;
+        }
+
         ArrayList<ArrayList<ImageView>> circleArrayList;
 
-        if (!difficulty2){
+        if (!futureCheck){
             circleArrayList = BoardLayout.store_circles;
         }
         else{
+            //3. Skapar en kopia av spelplanen
+            BoardLayout.store_circles_future = BoardLayout.store_circles;
             circleArrayList = BoardLayout.store_circles_future;
-        }
 
+            Indicators.activateIndicators(true, false, false);
+            existingPlacements = new ArrayList<>(Computer.possiblePlacements.values());
+        }
 
         for (ArrayList<ImageView> row : circleArrayList){
             for (ImageView imageView : row){
-                if (clickedVariable.equals(imageView)){
+                 if (clickedVariable.equals(imageView)){
                     clickedCircle = true;
                     break;
                 }
@@ -51,10 +74,14 @@ public class Framework {
             if (!clickedCircle){
                 rowIndexCount++;
             }
+            else{
+                break;
+            }
         }
 
         rowIndex = rowIndexCount;
         colIndex = circleArrayList.get(rowIndex).indexOf(clickedVariable);
+
 
         boolean proximityCircleRight = false;
         boolean proximityCircleLeft = false;
@@ -360,6 +387,7 @@ public class Framework {
 
         //endregion
 
+
         //region checkProximityTopLeft
 
         if (proximityCircleTopLeft){
@@ -587,16 +615,127 @@ public class Framework {
 
         //endregion
 
-        BoardLayout.finalConversionResult = false;
 
-        if (concludingCircleLeft || concludingCircleRight || concludingCircleAbove || concludingCircleBelow ||
-                concludingCircleTopLeft || concludingCircleTopRight || concludingCircleBotLeft || concludingCircleBotRight){
+        boolean parameters = (concludingCircleLeft || concludingCircleRight || concludingCircleAbove || concludingCircleBelow ||
+                concludingCircleTopLeft || concludingCircleTopRight || concludingCircleBotLeft || concludingCircleBotRight);
 
-            clickedVariable.setImageDrawable(MainActivity.sameColor);
+        if (!futureCheck){
 
-            clickedVariable.setClickable(false);
-            clickedVariable.setImageAlpha(255);
-            BoardLayout.finalConversionResult = true;
+            BoardLayout.finalConversionResult = false;
+
+            if (parameters){
+
+                clickedVariable.setImageDrawable(MainActivity.sameColor);
+
+                clickedVariable.setClickable(false);
+                clickedVariable.setImageAlpha(255);
+                BoardLayout.finalConversionResult = true;
+
+                BoardLayout.addDesirable();
+            }
+        }
+        else{
+
+        }
+
+        checkWin(clickedVariable);
+    }
+
+
+    private static boolean checkSuitability(){
+
+        //5. Alla nya möjliga drag som spelaren kan lägga sparas i en lista genom följande metoden
+        Indicators.activateIndicators(true, false, true);
+
+        //6. De nya dragens bild-värden sparas i nedanstående lista
+        ArrayList<ImageView> possibleUserPlacements = new ArrayList<>(Computer.possiblePlacements.values());
+
+        for (ImageView existingPlacement : existingPlacements){
+            possibleUserPlacements.removeIf(existingPlacement::equals);
+        }
+
+        //7. Nedanstående for-loop undersöker ifall någon av de nya möjliga dragen kan göras på spelplanens kanter
+        for (ImageView possiblePlacement : possibleUserPlacements){
+            for (ImageView desiredPlacement : desirablePlacements){
+                if (possiblePlacement.equals(desiredPlacement)){
+                    return false;
+                }
+            }
+        }
+
+        return true;
+    }
+
+
+    public static void checkWin(ImageView clickedVariable){
+
+        //region temporärBullshit
+
+        Indicators.helperCount = 0;
+        Indicators.activateIndicators(false, true, false);
+
+        //endregion
+
+        Drawable whiteColor = Objects.requireNonNull(AppCompatResources.getDrawable(clickedVariable.getContext(), R.drawable.white_circle78));
+        Drawable blackColor = Objects.requireNonNull(AppCompatResources.getDrawable(clickedVariable.getContext(), R.drawable.black_circle78));
+        //Drawable transparentColor = Objects.requireNonNull(AppCompatResources.getDrawable(clickedVariable.getContext(), R.drawable.transparent_circle78));
+
+        boolean hasWon = false;
+
+        if (Indicators.helperCount < 1){
+            hasWon = true;
+        }
+        /*
+        else{
+            int count = 0;
+
+            for (ArrayList<ImageView> row : BoardLayout.store_circles){
+                for (ImageView imageView : row){
+                    if (MainActivity.areDrawablesIdentical(imageView.getDrawable(), transparentColor)){
+                        count++;
+                    }
+                }
+            }
+
+            if (count < 2){
+                hasWon = true;
+            }
+        }
+
+         */
+
+        if (hasWon){
+
+            int whiteCount = 0;
+            int blackCount = 0;
+
+            for (ArrayList<ImageView> row : BoardLayout.store_circles){
+                for (ImageView imageView : row){
+                    if (MainActivity.areDrawablesIdentical(imageView.getDrawable(), whiteColor)){
+                        whiteCount++;
+                    }
+                    else if (MainActivity.areDrawablesIdentical(imageView.getDrawable(), blackColor)){
+                        blackCount++;
+                    }
+                }
+            }
+
+            MainActivity.gameWon = true;
+
+            timeEnd = System.nanoTime();
+            MainActivity.timeElapsed = (timeEnd - timeStart) / 1000000000;
+
+            if (whiteCount > blackCount){
+                MainActivity.gameWinner = "Vit";
+            }
+            else if (blackCount > whiteCount) {
+                MainActivity.gameWinner = "Svart";
+            }
+            else{
+                MainActivity.gameWinner = "Oavgjort";
+            }
         }
     }
+
+    //...
 }

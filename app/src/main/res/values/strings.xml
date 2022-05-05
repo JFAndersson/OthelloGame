@@ -8,4 +8,5 @@
     <string name="settingsHeader">Inställningar</string>
     <string name="returnHeader">Tillbaka</string>
     <string name="pick_color">Välj din färg</string>
+    <string name="arrowLeft"><![CDATA[<]]></string>
 </resources>
